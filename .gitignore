@@ -1,0 +1,7 @@
+node_modules/
+work/
+lib/
+dist/
+*.log
+!verification/local/**/run.log
+!verification/local/typecheck.log

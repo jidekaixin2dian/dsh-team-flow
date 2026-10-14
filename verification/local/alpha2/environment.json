@@ -1,0 +1,9 @@
+{
+  "configPath": "scratch-compat/continuous-alpha2-PEicgA.config.ts",
+  "upstream": "<workspace>\\work\\upstream",
+  "continuous": true,
+  "future": true,
+  "alpha1": false,
+  "node": "v24.15.0",
+  "platform": "win32"
+}

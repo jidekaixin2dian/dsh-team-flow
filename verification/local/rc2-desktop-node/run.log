@@ -1,0 +1,16 @@
+
+ RUN  v4.1.11 <workspace>
+
+ ✓ tests/compat/rc2.spec.ts (15 tests) 14703ms
+   ✓ installed rc2: plugin alone distinguishes Steer/Queue/user inject and returns success  384ms
+   ✓ installed rc2: 20 repeated waits consume each original Steer exactly once  2409ms
+   ✓ installed rc2: uncaught real Node PTC continues after wait success  505ms
+   ✓ installed rc2: ordinary timeout remains timedOut true  10083ms
+ ✓ tests/compat/register.spec.ts (1 test) 117ms
+
+ Test Files  2 passed (2)
+      Tests  16 passed (16)
+   Start at  19:47:47
+   Duration  23.06s (transform 791ms, setup 0ms, import 7.13s, tests 14.82s, environment 0ms)
+
+JSON report written to <workspace>/evidence/compat/continuous-rc2-desktop-node-Ryq5OB/vitest.json

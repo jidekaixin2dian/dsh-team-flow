@@ -1,0 +1,44 @@
+name: Compatibility
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        host: [alpha1, alpha2]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.18.1'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm install --global pnpm@11.28.5 --ignore-scripts
+      - name: Prepare pinned host
+        shell: pwsh
+        run: |
+          if ('${{ matrix.host }}' -eq 'alpha1') { npm run setup:host -- --alpha1 } else { npm run setup:host }
+      - run: npm run build
+      - name: Strict type check
+        shell: pwsh
+        run: |
+          if ('${{ matrix.host }}' -eq 'alpha1') { npm run typecheck -- --alpha1 } else { npm run typecheck }
+      - name: Runtime regression
+        shell: pwsh
+        run: |
+          if ('${{ matrix.host }}' -eq 'alpha1') { npm test -- --alpha1 } else { npm test }
+      - run: npm run pack:local
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: compatibility-${{ matrix.host }}
+          path: |
+            work/results/
+            work/typecheck.log
+            dist/

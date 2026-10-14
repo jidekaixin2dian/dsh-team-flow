@@ -1,0 +1,9 @@
+{
+  "configPath": "scratch-compat/continuous-alpha1-72m2U2.config.ts",
+  "upstream": "<workspace>\\work\\compat-alpha1",
+  "continuous": true,
+  "future": true,
+  "alpha1": true,
+  "node": "v24.15.0",
+  "platform": "win32"
+}

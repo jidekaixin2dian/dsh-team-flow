@@ -1,0 +1,6 @@
+# Must follow the official Agent Teams profile. Never rename a protected entry.
+- id: tool-agent-team
+  disabled: true
+- insert:
+    - id: dsh-team-flow-continuous
+      name: dsh-team-flow-continuous

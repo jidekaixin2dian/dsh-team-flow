@@ -1,0 +1,9 @@
+{
+  "configPath": "scratch-compat/continuous-rc2-Y7z2Vh.config.ts",
+  "upstream": "<workspace>\\work\\upstream",
+  "continuous": true,
+  "future": false,
+  "alpha1": false,
+  "node": "v24.15.0",
+  "platform": "win32"
+}

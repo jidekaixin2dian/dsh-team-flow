@@ -1,0 +1,11 @@
+{
+  "configPath": "scratch-compat/continuous-rc2-desktop-node-Ryq5OB.config.ts",
+  "upstream": "<workspace>\\work\\upstream",
+  "continuous": true,
+  "future": false,
+  "alpha1": false,
+  "node": "v24.18.1",
+  "executable": "<user-home>\\AppData\\Local\\Programs\\DeepSeek Harness\\DeepSeek Harness.exe",
+  "platform": "win32",
+  "desktopWindowOpened": false
+}
