@@ -10,6 +10,8 @@ The same implementation passed 16 isolated Mock-runtime checks on the installed 
 
 ## Install
 
+Requires **DSH >=0.2.0-rc.2 and Node >=24**, with official **Agent Teams** enabled first. See [marketplace verification](docs/marketplace.md). Once the catalog submission is merged and synced, search DSH Market for `DSH Team Flow` and verify source `jidekaixin2dian/dsh-team-flow`. Until then, use the Release package below.
+
 Wait until all Agents are idle. Enable the official Agent Teams bundle first, then install the `.tgz` from [Releases](https://github.com/jidekaixin2dian/dsh-team-flow/releases) through DSH's plugin manager or:
 
 ```text
@@ -18,7 +20,11 @@ dsh plugin --profile <test-profile> add <absolute-tgz-path>
 
 This bundle must follow Agent Teams. It disables the original `tool-agent-team` profile entry and loads that host's official tool module itself, avoiding duplicate owners. Open a new conversation. Use Steer; Queue retains its existing behavior. Enter's behavior depends on DSH's setting.
 
+The manifest declares `dsh.bundle.order.after` for market order diagnostics; it does not enable Agent Teams automatically. Copy any custom `freshProvider` / `forkProvider` values from the official tools to this plugin's configuration.
+
 Uninstall while idle with the plugin manager or `dsh plugin --profile <test-profile> remove dsh-team-flow-continuous`. Disabling during an active wait ends only that call with an explicit `TEAM_FLOW_RC2_DISABLED` error; an uncaught PTC program may then skip later statements.
+
+Use DSH Market's **package switch** or uninstall: the market removes this entire bundle layer on disable, restoring the official tools, then reapplies it on enable. Disabling only this plugin's loader entry by hand leaves its stock-tool disable in place. The market may request a restart; operate while Agents are idle. Both the Release archive and GitHub source include `lib`, with no install-time build approval required. Not npm-published.
 
 ## Contract and limits
 
@@ -39,6 +45,7 @@ npm run build
 npm run typecheck
 npm test
 npm run pack:local
+npm run test:market
 ```
 
 For alpha.1, pass `-- --alpha1` to setup, typecheck and test. All model traffic is Mock and all DSH data is confined to this checkout's `work/`. CI runs the two public-source versions. Installation-owned rc.2 files are not redistributed.

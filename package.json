@@ -1,16 +1,19 @@
 {
   "name": "dsh-team-flow-continuous",
-  "version": "0.2.0-alpha.3",
+  "version": "0.2.0-alpha.4",
   "private": true,
   "license": "MIT",
   "description": "Let user Steer end a single Agent Teams wait while teammates keep running.",
   "type": "module",
   "main": "lib/index.js",
+  "icon": "./icon.svg",
   "exports": {
     ".": {
       "types": "./lib/index.d.ts",
       "default": "./lib/index.js"
-    }
+    },
+    "./package.json": "./package.json",
+    "./cordis.patch.yml": "./cordis.patch.yml"
   },
   "files": [
     "lib/*.js",
@@ -18,14 +21,21 @@
     "cordis.patch.yml",
     "README.md",
     "LICENSE",
-    "SECURITY.md"
+    "SECURITY.md",
+    "icon.svg"
   ],
   "engines": {
-    "node": ">=24.0.0"
+    "node": ">=24.0.0",
+    "dsh": ">=0.2.0-rc.2"
   },
   "dsh": {
     "bundle": {
-      "patch": "./cordis.patch.yml"
+      "patch": "./cordis.patch.yml",
+      "order": {
+        "after": [
+          "@deepseek-ai/dsh-experimental-agent-team-profile"
+        ]
+      }
     }
   },
   "peerDependencies": {
@@ -71,6 +81,7 @@
   "keywords": [
     "deepseek-harness",
     "dsh",
+    "dsh-plugin",
     "cordis",
     "agent-teams",
     "steer"
@@ -83,6 +94,7 @@
     "build": "node scripts/build.mjs",
     "setup:host": "node scripts/setup-host.mjs",
     "test": "node tests/run.mjs",
+    "test:market": "node tests/market.mjs",
     "typecheck": "node scripts/typecheck.mjs",
     "pack:local": "node scripts/pack.mjs"
   }

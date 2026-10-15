@@ -23,6 +23,8 @@ DSH Agent Teams 的 Lead 可能停在 `wait_agent` 中。新消息虽进入收�
 
 ## 安装
 
+需要 **DSH >=0.2.0-rc.2、Node >=24**，并先启用官方 **Agent Teams**。市场收录流程与验收见 [市场适配记录](docs/marketplace.md)。收录合并并同步后，可在 DSH Market 搜索 `DSH Team Flow`，核对来源 `jidekaixin2dian/dsh-team-flow` 后安装；审核期间使用下面的 Release 安装方式。
+
 1. 让所有 Agent idle，并备份自己的 profile 配置。建议先使用新的测试 profile。
 2. 先启用官方 **Agent Teams** bundle。
 3. 从 [Releases](https://github.com/jidekaixin2dian/dsh-team-flow/releases) 下载 `dsh-team-flow-continuous-*.tgz`，在 DSH 插件管理器安装本地包；也可使用 CLI：
@@ -31,7 +33,7 @@ DSH Agent Teams 的 Lead 可能停在 `wait_agent` 中。新消息虽进入收�
 dsh plugin --profile <你的测试profile> add <tgz绝对路径>
 ```
 
-4. 确保本插件 bundle 在 Agent Teams bundle **之后**。它停用原 `tool-agent-team` profile entry，自己加载宿主当版的官方 Team 工具，避免双重注册。
+4. 确保本插件 bundle 在 Agent Teams bundle **之后**。包已声明 `dsh.bundle.order.after`，市场诊断可识别并建议顺序；这不是自动启用 Agent Teams。它停用原 `tool-agent-team` profile entry，自己加载宿主当版的官方 Team 工具，避免双重注册。若你曾自定义官方工具的 `freshProvider` / `forkProvider`，请在本插件配置中使用相同值。
 5. 开新会话，按你的发送设置使用 **Steer / 插话**。Queue / 排队仍按原语义执行；普通 Enter 的行为由 DSH 设置决定。
 
 卸载同样建议先 idle，然后在插件管理器移除，或运行：
@@ -41,6 +43,8 @@ dsh plugin --profile <你的测试profile> remove dsh-team-flow-continuous
 ```
 
 若主动禁用时仍有 wait，会返回 `TEAM_FLOW_RC2_DISABLED` 错误；未捕获该错误的 PTC 程序可能停止后续语句。移除 bundle 后恢复原版工具配置。请勿与另一套同名 Team 工具 owner 同时启用。
+
+在 DSH Market 中禁用时，市场会移除本插件的整层补丁，使官方工具恢复；重新启用后再应用本插件。请使用**包级开关**或卸载：手工只将 `dsh-team-flow-continuous` loader entry 设为 disabled，会留下下层对官方工具的停用。市场可能要求重启；等所有 Agent idle 后操作。预构建包与 GitHub 源码均包含 `lib`，无需允许安装脚本；未发布 npm。
 
 ## 如何工作与兼容边界
 
@@ -61,6 +65,7 @@ npm run build
 npm run typecheck
 npm test
 npm run pack:local
+npm run test:market
 ```
 
 alpha.1 矩阵：`npm run setup:host -- --alpha1`，然后 `npm run typecheck -- --alpha1`、`npm test -- --alpha1`。Windows GitHub Actions 持续运行这两档公开源码；rc.2 的安装文件副本不会被上传，保留本地脱敏证据。

@@ -12,7 +12,7 @@ if (result.status) throw new Error(result.stderr)
 const parsed = JSON.parse(result.stdout), report = Array.isArray(parsed) ? parsed[0] : Object.values(parsed)[0]
 const manifest = JSON.parse(readFileSync('package.json', 'utf8'))
 if (report.name !== manifest.name) throw new Error('Unexpected archive')
-const allowed = new Set(['package.json', 'cordis.patch.yml', 'README.md', 'README.en.md', 'LICENSE', 'SECURITY.md', ...['index', 'register', 'wake-core'].flatMap(n => [`lib/${n}.js`, `lib/${n}.d.ts`])])
+const allowed = new Set(['package.json', 'cordis.patch.yml', 'icon.svg', 'README.md', 'README.en.md', 'LICENSE', 'SECURITY.md', ...['index', 'register', 'wake-core'].flatMap(n => [`lib/${n}.js`, `lib/${n}.d.ts`])])
 if (report.files.some(f => !allowed.has(f.path)) || report.files.length !== allowed.size) throw new Error('Archive whitelist mismatch')
 const file = resolve('dist', report.filename), sha256 = createHash('sha256').update(readFileSync(file)).digest('hex')
 writeFileSync('dist/SHA256SUMS.txt', `${sha256}  ${report.filename}\n`)

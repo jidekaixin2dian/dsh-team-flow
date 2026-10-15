@@ -1,0 +1,16 @@
+
+ RUN  v4.1.11 <project>
+
+ ✓ tests/compatibility.spec.ts (15 tests) 15890ms
+   ✓ host compatibility: 20 repeated waits consume each original Steer exactly once  3066ms
+   ✓ host compatibility: uncaught real Node PTC continues after wait success  910ms
+   ✓ host compatibility: ordinary timeout remains timedOut true  10101ms
+ ✓ tests/bundle.spec.ts (1 test) 3ms
+ ✓ tests/register.spec.ts (1 test) 104ms
+
+ Test Files  3 passed (3)
+      Tests  17 passed (17)
+   Start at  05:02:16
+   Duration  18.76s (transform 1.59s, setup 0ms, import 2.30s, tests 16.00s, environment 0ms)
+
+JSON report written to <project>/work/results/alpha2-test-6G3HvH/vitest.json

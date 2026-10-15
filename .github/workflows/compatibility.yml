@@ -25,6 +25,8 @@ jobs:
         run: |
           if ('${{ matrix.host }}' -eq 'alpha1') { npm run setup:host -- --alpha1 } else { npm run setup:host }
       - run: npm run build
+      - name: Verify source-install artifacts
+        run: git diff --exit-code -- lib
       - name: Strict type check
         shell: pwsh
         run: |
@@ -34,6 +36,9 @@ jobs:
         run: |
           if ('${{ matrix.host }}' -eq 'alpha1') { npm test -- --alpha1 } else { npm test }
       - run: npm run pack:local
+      - name: Marketplace contract and isolated package install
+        if: matrix.host == 'alpha2'
+        run: npm run test:market
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:

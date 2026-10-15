@@ -1,0 +1,13 @@
+{
+  "host": "Unmodified copied installed DSH 0.2.0-rc.2 CLI",
+  "pnpm": "11.21.0",
+  "isolatedHome": true,
+  "installExitCode": 0,
+  "activeBundleAdded": true,
+  "officialToolDisabledInDump": true,
+  "removeExitCode": 0,
+  "substituteRemoved": true,
+  "officialToolRestoredInDump": true,
+  "desktopWindowOpened": false,
+  "scope": "Actual CLI add/remove and --dump-config; not model execution or Desktop UI."
+}
