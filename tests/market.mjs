@@ -49,8 +49,17 @@ for (const manager of ['11.7.0', '11.28.5']) {
   const team = '@deepseek-ai/dsh-experimental-agent-team-profile'
   fs.writeFileSync(join(profile, 'package.json'), JSON.stringify({ private: true, dsh: { profile: { bundles: [team] } } }))
   fs.writeFileSync(join(profile, '.npmrc'), 'node-linker=hoisted\nauto-install-peers=false\n')
+  assert.equal(run(process.execPath, [npm, 'exec', '--yes', `--package=pnpm@${manager}`, '--', 'pnpm', '--version'], profile), manager)
   const spec = arg('--source-spec') ?? arg('--release-url') ?? `file:${archive}`
-  run(process.execPath, [npm, 'exec', '--yes', `--package=pnpm@${manager}`, '--', 'pnpm', 'add', '--ignore-scripts', '--save-prod', spec], profile)
+  let installedTarget = spec, fallbackReason
+  const install = target => run(process.execPath, [npm, 'exec', '--yes', `--package=pnpm@${manager}`, '--', 'pnpm', 'add', '--ignore-scripts', '--store-dir', join(home, 'pnpm-store', manager), '--save-prod', target], profile)
+  try { install(spec) } catch (error) {
+    if (!arg('--release-url') || !error.message.includes('ERR_PNPM_MISSING_TARBALL_INTEGRITY')) throw error
+    installedTarget = sourceFallbackFor(entry, spec)
+    if (!installedTarget) throw error
+    fallbackReason = 'ERR_PNPM_MISSING_TARBALL_INTEGRITY'
+    install(installedTarget) // Same profile, using the market's actual fallback selection.
+  }
   const installed = join(profile, 'node_modules', manifest.name)
   const installedManifest = JSON.parse(fs.readFileSync(join(installed, 'package.json'), 'utf8'))
   assert.equal(installedManifest.version, manifest.version)
@@ -81,7 +90,7 @@ for (const manager of ['11.7.0', '11.28.5']) {
   assert.deepEqual(readProfileBundles(profile), [team, manifest.name])
   assert.deepEqual(parsePatchFile(patch), []) // enableRow removes its redundant override.
   assert.ok(!fs.readFileSync(patch, 'utf8').includes('tool-agent-team'), 'Market must not persist a foreign disable')
-  rows.push({ pnpm: manager, install: spec.startsWith('file:') ? 'local prebuilt tarball' : spec, packageVersion: installedManifest.version, loadable: true, duplicateHostPackages: false, orderAndCarrierToggle: 'passed' })
+  rows.push({ pnpm: manager, install: spec.startsWith('file:') ? 'local prebuilt tarball' : installedTarget, ...(fallbackReason ? { requested: spec, fallbackReason } : {}), packageVersion: installedManifest.version, loadable: true, duplicateHostPackages: false, orderAndCarrierToggle: 'passed' })
 }
 fs.mkdirSync('work/results', { recursive: true })
 fs.writeFileSync('work/results/market.json', JSON.stringify({ marketSha, marketVersion: JSON.parse(fs.readFileSync(join(market, 'package.json'), 'utf8')).version, node: process.version, tests: rows, scope: 'Real pnpm installs and market helper calls; not market HTTP/UI or complete Desktop E2E.' }, null, 2) + '\n')
