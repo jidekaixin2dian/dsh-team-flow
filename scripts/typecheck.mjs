@@ -2,13 +2,13 @@ import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { selectHost } from './hosts.mjs'
 
 const project = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const hostApi = false
 const compat = false
 const continuous = false
-const hostIndex = process.argv.indexOf('--host-path')
-const upstream = hostIndex >= 0 ? resolve(process.argv[hostIndex + 1]) : resolve(project, 'work', process.argv.includes('--alpha1') ? 'alpha1' : 'alpha2')
+const upstream = selectHost().directory
 const require = createRequire(resolve(upstream, 'package.json'))
 const ts = require('typescript')
 const raw = ts.readConfigFile(resolve(upstream, 'tsconfig.base.json'), ts.sys.readFile)

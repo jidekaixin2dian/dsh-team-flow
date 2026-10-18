@@ -7,7 +7,7 @@ import AgentLoop from '@deepseek-ai/dsh-agent-loop'
 import { mountAgentLoopTestDependencies } from '@deepseek-ai/dsh-agent-loop-testkit'
 import { ToolCallId, createUserMessage } from '@deepseek-ai/dsh-llm'
 import { SessionId } from '@deepseek-ai/dsh-session'
-import JsonlSessionPersistence from '@deepseek-ai/dsh-session-persistence-jsonl'
+import * as JsonlPersistence from '@deepseek-ai/dsh-session-persistence-jsonl'
 import SubagentService from '@deepseek-ai/dsh-subagent'
 import * as SubagentSpawn from '@deepseek-ai/dsh-subagent-spawn-in-process'
 import TeamService from '@deepseek-ai/dsh-experimental-agent-team'
@@ -33,7 +33,8 @@ export async function setup(scenario: string, options: { ptc?: string; spike?: b
   onTestFinished(async () => { await ctx.fiber.dispose() })
   await mountAgentLoopTestDependencies(ctx, { tools: { mode: options.ptc ? 'ptc' : 'native' } })
   await mountWorkingDirectoryFixture(ctx)
-  await ctx.plugin(JsonlSessionPersistence, { root })
+  // rc.2 exposes the lifecycle-owning apply plugin; older hosts export the service default.
+  await ctx.plugin(JsonlPersistence.default ?? JsonlPersistence, { root })
   await ctx.plugin(TestSessionQuery)
   await ctx.plugin(AgentLoop, { agents: [] })
   await ctx.plugin(SubagentService)

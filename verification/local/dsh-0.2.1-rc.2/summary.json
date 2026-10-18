@@ -1,0 +1,39 @@
+{
+  "dateUtc8": "2026-10-18",
+  "plugin": "0.2.0-alpha.5",
+  "runs": [
+    {
+      "host": "rc2",
+      "sha": "687f282e8625c6b8d11ff58211a90524be2e4317",
+      "node": "v24.15.0",
+      "passed": 18,
+      "failed": 0,
+      "skipped": 0,
+      "success": true
+    },
+    {
+      "host": "alpha1",
+      "sha": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+      "node": "v24.15.0",
+      "passed": 17,
+      "failed": 0,
+      "skipped": 1,
+      "success": true
+    },
+    {
+      "host": "alpha2",
+      "sha": "d743267388641bc76f17c45ce8b4c231aed1d32c",
+      "node": "v24.15.0",
+      "passed": 17,
+      "failed": 0,
+      "skipped": 1,
+      "success": true
+    }
+  ],
+  "rc2Typecheck": "passed",
+  "rc2Pnpm": "11.28.5; frozen lockfile; scripts disabled; supply-chain policies passed",
+  "sourceAcquisition": "Official GitHub archive: 16297 source blobs verified against target commit tree; Git object cache seeded; clean detached checkout",
+  "runtimeJavaScriptChanged": false,
+  "formalDshDataChanged": false,
+  "models": "Mock with real Node PTC subprocess"
+}

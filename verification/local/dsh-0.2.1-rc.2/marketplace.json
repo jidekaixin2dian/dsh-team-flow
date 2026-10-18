@@ -1,0 +1,24 @@
+{
+  "marketSha": "b8948c1aee21a5a10cf78266aadd0b49f8d2515c",
+  "marketVersion": "1.66.21",
+  "node": "v24.15.0",
+  "tests": [
+    {
+      "pnpm": "11.7.0",
+      "install": "local prebuilt tarball",
+      "packageVersion": "0.2.0-alpha.5",
+      "loadable": true,
+      "duplicateHostPackages": false,
+      "orderAndCarrierToggle": "passed"
+    },
+    {
+      "pnpm": "11.28.5",
+      "install": "local prebuilt tarball",
+      "packageVersion": "0.2.0-alpha.5",
+      "loadable": true,
+      "duplicateHostPackages": false,
+      "orderAndCarrierToggle": "passed"
+    }
+  ],
+  "scope": "Real pnpm installs and market helper calls; not market HTTP/UI or complete Desktop E2E."
+}

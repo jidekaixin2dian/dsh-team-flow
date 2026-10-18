@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        host: [alpha1, alpha2]
+        host: [alpha1, alpha2, rc2]
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
@@ -23,21 +23,21 @@ jobs:
       - name: Prepare pinned host
         shell: pwsh
         run: |
-          if ('${{ matrix.host }}' -eq 'alpha1') { npm run setup:host -- --alpha1 } else { npm run setup:host }
+          npm run setup:host -- --host ${{ matrix.host }}
       - run: npm run build
       - name: Verify source-install artifacts
         run: git diff --exit-code -- lib
       - name: Strict type check
         shell: pwsh
         run: |
-          if ('${{ matrix.host }}' -eq 'alpha1') { npm run typecheck -- --alpha1 } else { npm run typecheck }
+          npm run typecheck -- --host ${{ matrix.host }}
       - name: Runtime regression
         shell: pwsh
         run: |
-          if ('${{ matrix.host }}' -eq 'alpha1') { npm test -- --alpha1 } else { npm test }
+          npm test -- --host ${{ matrix.host }}
       - run: npm run pack:local
       - name: Marketplace contract and isolated package install
-        if: matrix.host == 'alpha2'
+        if: matrix.host == 'rc2'
         run: npm run test:market
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()

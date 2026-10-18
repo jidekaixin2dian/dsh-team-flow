@@ -8,6 +8,8 @@ Let user Steer end one Agent Teams `wait_agent` call while teammates keep runnin
 
 The same implementation passed 16 isolated Mock-runtime checks on the installed 0.2.0-rc.2 and public 0.2.1-alpha.1 / alpha.2. Each includes 20 repeated Steer wakes and a real Node PTC subprocess. The current Desktop's Node 24.18.1 mode also passed. These are functional checks, not production latency measurements.
 
+**2026-10-18: latest official DSH `0.2.1-rc.2` passed 18/18 isolated checks and strict TypeScript validation**, including real Node PTC and Steer with the host's new `interrupt=false` option. Plugin preview `0.2.0-alpha.5` records this compatibility in [the evidence report](docs/compatibility-0.2.1-rc.2.md). The compatibility target still starts at `0.2.0-rc.2`.
+
 ## Install
 
 Requires **DSH >=0.2.0-rc.2 and Node >=24**, with official **Agent Teams** enabled first. See [marketplace verification](docs/marketplace.md). Once the catalog submission is merged and synced, search DSH Market for `DSH Team Flow` and verify source `jidekaixin2dian/dsh-team-flow`. Until then, use the Release package below.
@@ -48,6 +50,6 @@ npm run pack:local
 npm run test:market
 ```
 
-For alpha.1, pass `-- --alpha1` to setup, typecheck and test. All model traffic is Mock and all DSH data is confined to this checkout's `work/`. CI runs the two public-source versions. Installation-owned rc.2 files are not redistributed.
+Setup, typecheck and test now default to `0.2.1-rc.2`. Pass `-- --host alpha1` or `-- --host alpha2` for older public hosts; legacy `--alpha1` still works. All model traffic is Mock and all DSH data is confined to this checkout's `work/`. CI runs all three public-source versions. Installation-owned old `0.2.0-rc.2` files are not redistributed.
 
 MIT. Community project, not affiliated with DeepSeek. Share versions, minimal reproduction and redacted logs in Issues; never include credentials or private conversations.
