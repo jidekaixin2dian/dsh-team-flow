@@ -16,7 +16,7 @@ Recorded 2026-10-18 (UTC+8), plugin `0.2.0-alpha.5` / 团队插话助手 · DSH 
 - All inference is Mock, with a real local Node PTC subprocess. DSH_HOME is confined to repository `work/`. No production profile, conversation, API key or installed program file is modified.
 - The first rc.2 test run failed during fixture setup because the legacy persistence default export is absent. Selecting the official new apply plugin resolved the setup failure; the complete suite was rerun. The Steer runtime source did not require modification.
 
-Evidence: [matrix summary](../verification/local/dsh-0.2.1-rc.2/summary.json), [rc.2 runtime](../verification/local/dsh-0.2.1-rc.2/rc2-run.log), [strict check](../verification/local/dsh-0.2.1-rc.2/typecheck.txt), [package/market checks](../verification/local/dsh-0.2.1-rc.2/marketplace.json). Older alpha.1 / alpha.2 were rerun after the persistence harness change: 17 passing checks each, plus one explicitly skipped rc.2-only option test. Runtime JS hashes match alpha.4. Existing historical records are not a claim that an old binary ran against rc.2 at its original publication date.
+Evidence: [matrix summary](../verification/local/dsh-0.2.1-rc.2/summary.json), [rc.2 runtime](../verification/local/dsh-0.2.1-rc.2/rc2/run.log), [strict check](../verification/local/dsh-0.2.1-rc.2/typecheck.txt), [package/market checks](../verification/local/dsh-0.2.1-rc.2/marketplace.json). Older alpha.1 / alpha.2 were rerun after the persistence harness change: 17 passing checks each, plus one explicitly skipped rc.2-only option test. Runtime JS hashes match alpha.4. Existing historical records are not a claim that an old binary ran against rc.2 at its original publication date.
 
 ## Unverified / 尚未验证
 
