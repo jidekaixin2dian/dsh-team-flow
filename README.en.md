@@ -1,6 +1,6 @@
 # DSH Team Flow
 
-[中文](README.md) · [Preview releases](https://github.com/jidekaixin2dian/dsh-team-flow/releases) · [Verification](docs/verification.md)
+[中文](README.md) · [Marketplace](https://awesome-dsh-plugin.com/p/jidekaixin2dian/dsh-team-flow/) · [Preview releases](https://github.com/jidekaixin2dian/dsh-team-flow/releases) · [Trial guide and feedback](https://github.com/jidekaixin2dian/dsh-team-flow/discussions/1) · [Verification](docs/verification.md)
 
 Let user Steer end one Agent Teams `wait_agent` call while teammates keep running. The original AgentLoop consumes the original message at its next step. This is an independent implementation related to [DSH Discussion #9214](https://github.com/deepseek-ai/deepseek-harness/discussions/9214).
 
@@ -12,7 +12,7 @@ The same implementation passed 16 isolated Mock-runtime checks on the installed 
 
 ## Install
 
-Requires **DSH >=0.2.0-rc.2 and Node >=24**, with official **Agent Teams** enabled first. See [marketplace verification](docs/marketplace.md). Once the catalog submission is merged and synced, search DSH Market for `DSH Team Flow` and verify source `jidekaixin2dian/dsh-team-flow`. Until then, use the Release package below.
+Requires **DSH >=0.2.0-rc.2 and Node >=24**, with official **Agent Teams** enabled first. Listed in [DSH Market](https://awesome-dsh-plugin.com/p/jidekaixin2dian/dsh-team-flow/); the public catalog was verified to point to alpha.5 on 2026-10-20. Search for `dsh-team-flow` and verify source `jidekaixin2dian/dsh-team-flow`, or use the Release package below. See [rc.2 compatibility evidence](docs/compatibility-0.2.1-rc.2.md) for tested boundaries.
 
 Wait until all Agents are idle. Enable the official Agent Teams bundle first, then install the `.tgz` from [Releases](https://github.com/jidekaixin2dian/dsh-team-flow/releases) through DSH's plugin manager or:
 

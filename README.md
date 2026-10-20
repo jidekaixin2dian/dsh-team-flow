@@ -1,6 +1,6 @@
 # 团队插话助手 · DSH Team Flow
 
-[English](README.en.md) · [下载预览版](https://github.com/jidekaixin2dian/dsh-team-flow/releases) · [验证记录](docs/verification.md)
+[English](README.en.md) · [市场安装](https://awesome-dsh-plugin.com/p/jidekaixin2dian/dsh-team-flow/) · [下载预览版](https://github.com/jidekaixin2dian/dsh-team-flow/releases) · [试用说明与反馈](https://github.com/jidekaixin2dian/dsh-team-flow/discussions/1) · [验证记录](docs/verification.md)
 
 **主代理等待队友时，让用户的 Steer 结束这一次等待，队友继续工作。**
 
@@ -25,7 +25,7 @@ DSH Agent Teams 的 Lead 可能停在 `wait_agent` 中。新消息虽进入收�
 
 ## 安装
 
-需要 **DSH >=0.2.0-rc.2、Node >=24**，并先启用官方 **Agent Teams**。市场收录流程与验收见 [市场适配记录](docs/marketplace.md)。收录合并并同步后，可在 DSH Market 搜索 `DSH Team Flow`，核对来源 `jidekaixin2dian/dsh-team-flow` 后安装；审核期间使用下面的 Release 安装方式。
+需要 **DSH >=0.2.0-rc.2、Node >=24**，并先启用官方 **Agent Teams**。已收录 [DSH Market](https://awesome-dsh-plugin.com/p/jidekaixin2dian/dsh-team-flow/)，2026-10-20 核查公开目录已同步到 alpha.5。可在市场搜索 `dsh-team-flow`，核对来源 `jidekaixin2dian/dsh-team-flow` 后安装；也可使用下面的 Release 安装方式。兼容范围见 [rc.2 验证记录](docs/compatibility-0.2.1-rc.2.md)。
 
 1. 让所有 Agent idle，并备份自己的 profile 配置。建议先使用新的测试 profile。
 2. 先启用官方 **Agent Teams** bundle。
