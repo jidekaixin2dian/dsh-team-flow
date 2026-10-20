@@ -19,7 +19,7 @@ DSH Agent Teams 的 Lead 可能停在 `wait_agent` 中。新消息虽进入收�
 | 真实 Node PTC | 成功唤醒后，后续程序语句继续执行 |
 | 禁用插件时仍在 wait | 仅取消这个 wait，返回明确的插件禁用错误，队友继续运行 |
 
-隔离 Mock runtime 测试：当前安装的 **0.2.0-rc.2**、公开的 **0.2.1-alpha.1 / alpha.2** 每档 16/16；每档包含 20 次重复 Steer 和真实 Node PTC。当前安装版还使用 Desktop 自带 Node 24.18.1 模式补测。数字是功能验证，不是生产延迟或真实模型响应指标。
+当前公开源码矩阵：**0.2.1-alpha.1 / alpha.2** 各 17 项通过、跳过 1 项 rc.2 专属检查；**0.2.1-rc.2** 为 18/18。三档均有严格 TypeScript 检查与 Windows CI。旧安装版 **0.2.0-rc.2** 的 16/16 和 Desktop 自带 Node 24.18.1 补测属于历史证据，与新版宿主不同，详见[统一验证矩阵](docs/verification.md)。每档含重复 Steer 和真实 Node PTC；这些数字是隔离 Mock 功能验证，不是完整 Desktop UI、生产延迟或真实模型响应指标。
 
 **2026-10-18 更新：官方最新版 DSH `0.2.1-rc.2` 已通过 18/18 项隔离测试与严格 TypeScript 检查**，包含真实 Node PTC，以及新版 `interrupt=false` 配置下的 Steer 唤醒。对应插件版本 `0.2.0-alpha.5`；[源码与验证记录](docs/compatibility-0.2.1-rc.2.md)。兼容目标仍从原先的 `0.2.0-rc.2` 起，不强制旧用户升级宿主。
 

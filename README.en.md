@@ -6,7 +6,7 @@ Let user Steer end one Agent Teams `wait_agent` call while teammates keep runnin
 
 **Alpha preview.** No host source patch or installation-file changes. It uses reversible runtime decorators; production Desktop UI, SSH, Python PTC and arbitrary third-party plugin combinations remain unverified. Start with an isolated profile.
 
-The same implementation passed 16 isolated Mock-runtime checks on the installed 0.2.0-rc.2 and public 0.2.1-alpha.1 / alpha.2. Each includes 20 repeated Steer wakes and a real Node PTC subprocess. The current Desktop's Node 24.18.1 mode also passed. These are functional checks, not production latency measurements.
+The current public-source matrix passes **17 checks with 1 rc.2-only check skipped** on each of 0.2.1-alpha.1 / alpha.2, and **18/18** on 0.2.1-rc.2. All three have strict TypeScript checks and Windows CI. The older installed **0.2.0-rc.2** has separate historical 16/16 evidence, including Desktop's Node 24.18.1 mode; it is a different host from 0.2.1-rc.2. See the [unified verification matrix](docs/verification.md). These are isolated Mock-runtime functional checks with repeated Steer wakes and real Node PTC, not complete Desktop UI or production latency measurements.
 
 **2026-10-18: latest official DSH `0.2.1-rc.2` passed 18/18 isolated checks and strict TypeScript validation**, including real Node PTC and Steer with the host's new `interrupt=false` option. Plugin preview `0.2.0-alpha.5` records this compatibility in [the evidence report](docs/compatibility-0.2.1-rc.2.md). The compatibility target still starts at `0.2.0-rc.2`.
 

@@ -1,6 +1,20 @@
 # Verification and evidence boundaries
 
-Recorded 2026-10-14, UTC+8. The public preview packages the same runtime JavaScript implementation tested in the local matrix; publishing changes source layout, declarations and documentation.
+Updated 2026-10-20, UTC+8. This page is the current support matrix and the index of historical evidence. The source pins are shared by setup, strict type checking, runtime tests and CI through [`scripts/hosts.mjs`](../scripts/hosts.mjs). Package peer ranges are compatibility targets, not evidence that every host version has been tested.
+
+## Current public-source matrix
+
+| Host | Pinned official commit | Current suite | Evidence |
+|---|---|---|---|
+| 0.2.1-alpha.1 | `5badb15009ae1756c3afe0ae0cef1faafc290ccc` | 17 passed; 1 rc.2-only check skipped | [Recorded run](../verification/local/dsh-0.2.1-rc.2/alpha1/run.log) |
+| 0.2.1-alpha.2 | `d743267388641bc76f17c45ce8b4c231aed1d32c` | 17 passed; 1 rc.2-only check skipped | [Recorded run](../verification/local/dsh-0.2.1-rc.2/alpha2/run.log) |
+| 0.2.1-rc.2 (default) | `687f282e8625c6b8d11ff58211a90524be2e4317` | 18 passed | [Runtime](../verification/local/dsh-0.2.1-rc.2/rc2/run.log), [strict TypeScript](../verification/local/dsh-0.2.1-rc.2/typecheck.txt) |
+
+The [Compatibility workflow](../.github/workflows/compatibility.yml) reruns all three source pins. The [verified main run](https://github.com/jidekaixin2dian/dsh-team-flow/actions/runs/39408500060) passed each matrix job on 2026-10-20. For subsequent commits, inspect the corresponding run rather than treating this dated result as permanent certification. Runtime tests use Mock inference and real local Node PTC; they do not exercise the complete Desktop input chain. See [the rc.2 report](compatibility-0.2.1-rc.2.md) for the contract changes and evidence boundaries.
+
+## Historical installation and first-public-matrix evidence
+
+Recorded 2026-10-14. These 16-check records predate the current suite; they are retained as provenance, not the current public-host test counts. In particular, installed **0.2.0-rc.2** below is different from public **0.2.1-rc.2** above.
 
 | Host | Evidence | Result |
 |---|---|---|
@@ -13,7 +27,7 @@ Each suite checks the stock blocked-Steer baseline, Queue/user-inject exclusions
 
 The rc.2 build SHA could not be retrieved by exact-SHA fetch from its manifest's declared official repository. Its evidence is the actual installation's manifest and selected program-file integrity hashes, not an invented source checkout. Those installed program files and private build artifacts are not redistributed. The two public commits remain unmodified.
 
-Strict source type checking passes against alpha.2 declarations. The rc.2 installation does not supply the equivalent complete declarations, so this is not a claim of separate rc.2 compile-time ABI certification. Standalone public CI performs strict checks and runtime regression on both public host commits.
+At that historical stage, strict source type checking passed against alpha.2 declarations. The old 0.2.0-rc.2 installation did not supply equivalent complete declarations, so its runtime result is not separate compile-time ABI certification. The current public-source matrix above includes strict checks and runtime regression against all three public commits, including 0.2.1-rc.2.
 
 Recorded [profile lifecycle](../verification/local/package-lifecycle.json) verifies installation bytes, disabled original component, enabled substitute, package removal and restored original composition. It does not claim a real Desktop window was exercised.
 
