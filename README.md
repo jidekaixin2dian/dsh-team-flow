@@ -70,7 +70,7 @@ npm run pack:local
 npm run test:market
 ```
 
-默认准备和验证 `0.2.1-rc.2`。旧版矩阵统一传 `-- --host alpha1` 或 `-- --host alpha2` 给 setup、typecheck 和 test；原 `--alpha1` 参数继续可用。Windows GitHub Actions 持续运行这三档公开源码；旧 `0.2.0-rc.2` 的安装文件副本不会被上传，保留本地脱敏证据。
+默认准备和验证 `0.2.1-rc.2`。已有相同固定 commit 的干净宿主 checkout 时，可给 typecheck 和 test 传 `-- --host-path <绝对路径>`，无需重复安装依赖。旧版矩阵统一传 `-- --host alpha1` 或 `-- --host alpha2` 给 setup、typecheck 和 test；原 `--alpha1` 参数继续可用。Windows GitHub Actions 持续运行这三档公开源码；旧 `0.2.0-rc.2` 的安装文件副本不会被上传，保留本地脱敏证据。
 
 ## 反馈
 

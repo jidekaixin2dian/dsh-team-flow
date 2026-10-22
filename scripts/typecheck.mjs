@@ -1,6 +1,6 @@
 import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
-import { writeFileSync } from 'node:fs'
+import { mkdirSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { selectHost } from './hosts.mjs'
 
@@ -63,6 +63,7 @@ if (!diagnostics.length) {
 }
 const format = ts.formatDiagnosticsWithColorAndContext(diagnostics, { getCanonicalFileName: file => file, getCurrentDirectory: () => project, getNewLine: () => '\n' })
 const label = 'Strict TypeScript check passed against the selected official host source.'
+mkdirSync(resolve(project, 'work'), { recursive: true })
 writeFileSync(resolve(project, 'work/typecheck.log'), format || label + '\n')
 console.log(format || label)
 process.exitCode = diagnostics.length ? 1 : 0

@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+Unify the public host verification matrix and create the typecheck output directory when reusing an existing host checkout. The Steer runtime is unchanged.
+
 ## 0.2.0-alpha.5
 
 Verify latest official DSH 0.2.1-rc.2 (687f282e8625c6b8d11ff58211a90524be2e4317). Add it as the default pinned host and third Windows CI target, adapt the isolated harness to the host's lifecycle-owned JSONL persistence plugin, and test Steer with the new `interrupt=false` configuration. Runtime capability adapter and package identity remain unchanged. Chinese display name: 团队插话助手.

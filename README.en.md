@@ -50,6 +50,6 @@ npm run pack:local
 npm run test:market
 ```
 
-Setup, typecheck and test now default to `0.2.1-rc.2`. Pass `-- --host alpha1` or `-- --host alpha2` for older public hosts; legacy `--alpha1` still works. All model traffic is Mock and all DSH data is confined to this checkout's `work/`. CI runs all three public-source versions. Installation-owned old `0.2.0-rc.2` files are not redistributed.
+Setup, typecheck and test default to `0.2.1-rc.2`. Typecheck and test accept `-- --host-path <absolute-path>` to reuse a clean checkout at the pinned commit. Pass `-- --host alpha1` or `-- --host alpha2` for older public hosts; legacy `--alpha1` still works. All model traffic is Mock and all DSH data is confined to this checkout's `work/`. CI runs all three public-source versions. Installation-owned old `0.2.0-rc.2` files are not redistributed.
 
 MIT. Community project, not affiliated with DeepSeek. Share versions, minimal reproduction and redacted logs in Issues; never include credentials or private conversations.
