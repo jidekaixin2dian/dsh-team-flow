@@ -4,3 +4,5 @@ dist/
 *.log
 !verification/local/**/run.log
 !verification/local/typecheck.log
+
+__pycache__/
