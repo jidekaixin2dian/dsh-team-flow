@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-Unify the public host verification matrix and create the typecheck output directory when reusing an existing host checkout. The Steer runtime is unchanged.
+Bind the `presentResult` wake detection to the serialized `{"timedOut":false,"reason":"user-steer"}` value instead of matching the Chinese presentation copy by prefix, so future copy or locale changes cannot break result routing. Unify the public host verification matrix and create the typecheck output directory when reusing an existing host checkout. The Steer runtime is unchanged.
 
 ## 0.2.0-alpha.5
 
