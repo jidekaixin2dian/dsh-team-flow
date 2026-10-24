@@ -19,9 +19,11 @@ DSH Agent Teams 的 Lead 可能停在 `wait_agent` 中。新消息虽进入收�
 | 真实 Node PTC | 成功唤醒后，后续程序语句继续执行 |
 | 禁用插件时仍在 wait | 仅取消这个 wait，返回明确的插件禁用错误，队友继续运行 |
 
-当前公开源码矩阵：**0.2.1-alpha.1 / alpha.2** 各 17 项通过、跳过 1 项 rc.2 专属检查；**0.2.1-rc.2** 为 18/18。三档均有严格 TypeScript 检查与 Windows CI。旧安装版 **0.2.0-rc.2** 的 16/16 和 Desktop 自带 Node 24.18.1 补测属于历史证据，与新版宿主不同，详见[统一验证矩阵](docs/verification.md)。每档含重复 Steer 和真实 Node PTC；这些数字是隔离 Mock 功能验证，不是完整 Desktop UI、生产延迟或真实模型响应指标。
+当前公开源码矩阵：**0.2.1-alpha.1 / alpha.2** 各 17 项通过、跳过 1 项 rc.2+ 专属的 interrupt 检查；**0.2.1-rc.2** 与 **0.2.1-rc.3**（默认 pinned 宿主）均为 18/18。四档均有严格 TypeScript 检查与 Windows CI。旧安装版 **0.2.0-rc.2** 的 16/16 和 Desktop 自带 Node 24.18.1 补测属于历史证据，与新版宿主不同，详见[统一验证矩阵](docs/verification.md)。每档含重复 Steer 和真实 Node PTC；这些数字是隔离 Mock 功能验证，不是完整 Desktop UI、生产延迟或真实模型响应指标。
 
 **2026-10-18 更新：官方最新版 DSH `0.2.1-rc.2` 已通过 18/18 项隔离测试与严格 TypeScript 检查**，包含真实 Node PTC，以及新版 `interrupt=false` 配置下的 Steer 唤醒。对应插件版本 `0.2.0-alpha.5`；[源码与验证记录](docs/compatibility-0.2.1-rc.2.md)。兼容目标仍从原先的 `0.2.0-rc.2` 起，不强制旧用户升级宿主。
+
+**2026-10-24 更新：官方 DSH `0.2.1-rc.3`（`1f81c047`）已通过 18/18 项隔离测试与严格 TypeScript 检查，并成为默认 pinned 宿主；对应插件版本 `0.2.0-alpha.7`**。rc.2 → rc.3 未改变本插件绑定的任何核心契约（详见[rc.3 兼容报告](docs/compatibility-0.2.1-rc.3.md)）。
 
 ## 安装
 
@@ -70,7 +72,7 @@ npm run pack:local
 npm run test:market
 ```
 
-默认准备和验证 `0.2.1-rc.2`。已有相同固定 commit 的干净宿主 checkout 时，可给 typecheck 和 test 传 `-- --host-path <绝对路径>`，无需重复安装依赖。旧版矩阵统一传 `-- --host alpha1` 或 `-- --host alpha2` 给 setup、typecheck 和 test；原 `--alpha1` 参数继续可用。Windows GitHub Actions 持续运行这三档公开源码；旧 `0.2.0-rc.2` 的安装文件副本不会被上传，保留本地脱敏证据。
+默认准备和验证 `0.2.1-rc.3`。已有相同固定 commit 的干净宿主 checkout 时，可给 typecheck 和 test 传 `-- --host-path <绝对路径>`，无需重复安装依赖。旧版矩阵统一传 `-- --host alpha1`、`-- --host alpha2` 或 `-- --host rc2` 给 setup、typecheck 和 test；原 `--alpha1` 参数继续可用。Windows GitHub Actions 持续运行这四档公开源码；旧 `0.2.0-rc.2` 的安装文件副本不会被上传，保留本地脱敏证据。
 
 ## 反馈
 
