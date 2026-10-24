@@ -1,6 +1,6 @@
 {
   "name": "dsh-team-flow-continuous",
-  "version": "0.2.0-alpha.6",
+  "version": "0.2.0-alpha.7",
   "private": true,
   "license": "MIT",
   "description": "Let user Steer end a single Agent Teams wait while teammates keep running.",

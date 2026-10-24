@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.0-alpha.7 — 2026-10-24
+
+Verify official DSH 0.2.1-rc.3 (`1f81c047`) and make it the default pinned host: strict TypeScript check and the full 18/18 isolated matrix pass, with the `interrupt=false` check now also running on rc.3 (rc.2 re-verified 18/18). rc.2 → rc.3 ships UI features and version bumps only — none of the packages this plugin binds to changed source, so the runtime adapter is unchanged. CI matrix grows to four hosts (alpha1/alpha2/rc2/rc3); evidence and the rc.3 compatibility report are added under docs/ and verification/.
+
 ## 0.2.0-alpha.6 — 2026-10-24
 
 Bind the `presentResult` wake detection to the serialized `{"timedOut":false,"reason":"user-steer"}` value instead of matching the Chinese presentation copy by prefix, so future copy or locale changes cannot break result routing; Steer wake behavior is unchanged and the 18/18 rc.2 isolated matrix re-runs green. Also carries the earlier non-runtime commits: the unified public host verification matrix and the typecheck output directory for reused host checkouts.
