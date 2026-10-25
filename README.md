@@ -1,81 +1,64 @@
-# 团队插话助手 · DSH Team Flow
+# Team Flow · 团队插话助手
 
-[English](README.en.md) · [市场安装](https://awesome-dsh-plugin.com/p/jidekaixin2dian/dsh-team-flow/) · [下载预览版](https://github.com/jidekaixin2dian/dsh-team-flow/releases) · [试用说明与反馈](https://github.com/jidekaixin2dian/dsh-team-flow/discussions/1) · [验证记录](docs/verification.md)
+**主代理等队友时，你仍然可以插话。队友继续工作。**
 
-**主代理等待队友时，让用户的 Steer 结束这一次等待，队友继续工作。**
+[English](README.en.md) · [插件市场](https://awesome-dsh-plugin.com/p/jidekaixin2dian/dsh-team-flow/) · [下载预览版](https://github.com/jidekaixin2dian/dsh-team-flow/releases) · [更新记录](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/CHANGELOG.md)
 
-DSH Agent Teams 的 Lead 可能停在 `wait_agent` 中。新消息虽进入收件箱，仍要等 Team 变化或 timeout 后才能被下一步领取。Team Flow 是围绕 [Discussion #9214](https://github.com/deepseek-ai/deepseek-harness/discussions/9214) 的独立插件实现：仅结束本次 wait，再由原生 AgentLoop 领取原消息。
+DSH Agent Teams 的主代理可能停在 `wait_agent`。Team Flow 让同会话的用户 **Steer / 插话** 结束当前这一次等待，再由原生 AgentLoop 领取原消息；队友不会被停止，Queue 仍按原语义排队。
 
-这是 **alpha 预览版**。无需修改宿主源码或安装文件，但使用运行时方法装饰，尚未验证正式 Desktop UI、SSH、Python PTC 与任意第三方插件组合。请先在隔离 profile 试用。
+![Steer 结束主代理等待，队友继续工作的流程示意](https://raw.githubusercontent.com/jidekaixin2dian/dsh-team-flow/main/docs/team-flow.svg)
 
-## 已验证的行为
+> **Alpha 预览版。** 请先在隔离 profile 试用。已做隔离宿主与 Node PTC 验证；正式 Desktop UI、SSH、Python PTC 和任意第三方插件组合尚未完整验收。
 
-| 输入 / 条件 | 行为 |
+| 输入 | 结果 |
 |---|---|
-| 同一 Lead 的 user Steer | 本次 wait 返回 `{timedOut:false, reason:'user-steer'}`，原消息恰好一次领取 |
-| Queue、user-sourced inject、普通 send、直接 Inbox mutation | 不归因为 Steer 唤醒 |
-| 其他会话 / teammate 输入 | 不直接结束这里的 Lead 等待 |
-| Stop、guard 拒绝、Team-first、原生 timeout | 保留各自结果 |
-| 真实 Node PTC | 成功唤醒后，后续程序语句继续执行 |
-| 禁用插件时仍在 wait | 仅取消这个 wait，返回明确的插件禁用错误，队友继续运行 |
+| 同一 Lead 的用户 Steer | 结束本次等待，让原生循环继续领取消息 |
+| Queue、普通 send、inject | 保留各自语义，不当作 Steer |
+| 其他会话或队友输入 | 不直接结束这里的 Lead 等待 |
+| Stop、guard、Team 变化、timeout | 保留原有结果 |
 
-当前公开源码矩阵：**0.2.1-alpha.1 / alpha.2** 各 17 项通过、跳过 1 项 rc.2+ 专属的 interrupt 检查；**0.2.1-rc.2** 与 **0.2.1-rc.3**（默认 pinned 宿主）均为 18/18。四档均有严格 TypeScript 检查与 Windows CI。旧安装版 **0.2.0-rc.2** 的 16/16 和 Desktop 自带 Node 24.18.1 补测属于历史证据，与新版宿主不同，详见[统一验证矩阵](docs/verification.md)。每档含重复 Steer 和真实 Node PTC；这些数字是隔离 Mock 功能验证，不是完整 Desktop UI、生产延迟或真实模型响应指标。
+## 安装与更新
 
-**2026-10-18 更新：官方最新版 DSH `0.2.1-rc.2` 已通过 18/18 项隔离测试与严格 TypeScript 检查**，包含真实 Node PTC，以及新版 `interrupt=false` 配置下的 Steer 唤醒。对应插件版本 `0.2.0-alpha.5`；[源码与验证记录](docs/compatibility-0.2.1-rc.2.md)。兼容目标仍从原先的 `0.2.0-rc.2` 起，不强制旧用户升级宿主。
+需要 **DSH >=0.2.0-rc.2、Node >=24**，并先启用官方 **Agent Teams**。当前持续验证 DSH 0.2.1-alpha.1 / alpha.2 / rc.2 / rc.3；详细范围见[验证记录](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/docs/verification.md)。
 
-**2026-10-24 更新：官方 DSH `0.2.1-rc.3`（`1f81c047`）已通过 18/18 项隔离测试与严格 TypeScript 检查，并成为默认 pinned 宿主；对应插件版本 `0.2.0-alpha.7`**。rc.2 → rc.3 未改变本插件绑定的任何核心契约（详见[rc.3 兼容报告](docs/compatibility-0.2.1-rc.3.md)）。
+在市场搜索 **dsh-team-flow**，确认来源 **jidekaixin2dian/dsh-team-flow**。GitHub 安装源包含预构建文件，无需批准安装脚本；已有源安装可在「已安装」检查版本更新。市场目录更新前，可使用下面的命令。
 
-## 安装
-
-需要 **DSH >=0.2.0-rc.2、Node >=24**，并先启用官方 **Agent Teams**。已收录 [DSH Market](https://awesome-dsh-plugin.com/p/jidekaixin2dian/dsh-team-flow/)，2026-10-20 核查公开目录已同步到 alpha.5。可在市场搜索 `dsh-team-flow`，核对来源 `jidekaixin2dian/dsh-team-flow` 后安装；也可使用下面的 Release 安装方式。兼容范围见 [rc.2 验证记录](docs/compatibility-0.2.1-rc.2.md)。
-
-1. 让所有 Agent idle，并备份自己的 profile 配置。建议先使用新的测试 profile。
-2. 先启用官方 **Agent Teams** bundle。
-3. 从 [Releases](https://github.com/jidekaixin2dian/dsh-team-flow/releases) 下载 `dsh-team-flow-continuous-*.tgz`，在 DSH 插件管理器安装本地包；也可使用 CLI：
+1. 等所有 Agent 空闲，备份自己的 profile；建议使用测试 profile。
+2. 启用官方 Agent Teams，然后安装本插件：
 
 ```powershell
-dsh plugin --profile <你的测试profile> add <tgz绝对路径>
+dsh plugin --profile <test-profile> add github:jidekaixin2dian/dsh-team-flow
 ```
 
-4. 确保本插件 bundle 在 Agent Teams bundle **之后**。包已声明 `dsh.bundle.order.after`，市场诊断可识别并建议顺序；这不是自动启用 Agent Teams。它停用原 `tool-agent-team` profile entry，自己加载宿主当版的官方 Team 工具，避免双重注册。若你曾自定义官方工具的 `freshProvider` / `forkProvider`，请在本插件配置中使用相同值。
-5. 开新会话，按你的发送设置使用 **Steer / 插话**。Queue / 排队仍按原语义执行；普通 Enter 的行为由 DSH 设置决定。
+3. 确认本插件排在 Agent Teams bundle **之后**。按宿主要求重启，再开新会话，使用 Steer / 插话。
 
-卸载同样建议先 idle，然后在插件管理器移除，或运行：
+再次执行安装命令可更新。之前安装旧版 `.tgz` 的用户可用同一 profile 执行此命令切换到 GitHub 源，之后再由市场检查更新。Enter 是否执行 Steer 取决于 DSH 发送设置。
+
+<details>
+<summary>安装顺序、停用与卸载</summary>
+
+插件声明了 bundle 顺序，但不会替你启用 Agent Teams。它停用原 `tool-agent-team` entry，加载宿主自身的官方工具，避免重复注册。自定义过 `freshProvider` / `forkProvider` 的用户应在本插件配置里保留相同值。
+
+请使用市场的**包级开关**或卸载，恢复完整补丁层；不要只停用 loader entry，否则可能留下对官方工具的停用。
 
 ```powershell
-dsh plugin --profile <你的测试profile> remove dsh-team-flow-continuous
+dsh plugin --profile <test-profile> remove dsh-team-flow-continuous
 ```
 
-若主动禁用时仍有 wait，会返回 `TEAM_FLOW_RC2_DISABLED` 错误；未捕获该错误的 PTC 程序可能停止后续语句。移除 bundle 后恢复原版工具配置。请勿与另一套同名 Team 工具 owner 同时启用。
+等待 Agent 空闲后再停用或卸载。活动 wait 被停用时会返回 `TEAM_FLOW_RC2_DISABLED`；未捕获它的 PTC 程序可能停止后续语句。
 
-在 DSH Market 中禁用时，市场会移除本插件的整层补丁，使官方工具恢复；重新启用后再应用本插件。请使用**包级开关**或卸载：手工只将 `dsh-team-flow-continuous` loader entry 设为 disabled，会留下下层对官方工具的停用。市场可能要求重启；等所有 Agent idle 后操作。预构建包与 GitHub 源码均包含 `lib`，无需允许安装脚本；未发布 npm。
+</details>
 
-## 如何工作与兼容边界
+## 兼容边界
 
-插件加载**宿主自己的** Team 工具，不复制冻结旧版工具。注册前克隆 wait 定义，仅在缺少合法 Steer 成功值时扩展 schema / render；已经支持该值时保留契约。它还临时装饰公开 `Agent.steer()`，记录原消息 ID，再通过 `tools/execute` 的派生 signal 结束单次真实 wait，等待底层 promise 收敛。没有调用 Agent cancel，也不 claim / remove / 重发 Inbox 输入。
+- 使用可恢复的运行时方法装饰，复用宿主 Team 工具；没有修改宿主源码或安装文件。
+- 不取消 Agent、不消费或重发 Inbox 消息。成功值为 `{timedOut:false, reason:'user-steer'}`，不是伪造 timeout。
+- 方法装饰不是专用官方扩展 hook；其他装饰器、缓存方法或 ABI 变化可能冲突。不支持的契约在可检测时保留原等待并告警，模块不兼容也可能加载失败。
+- `user Steer` 表示经 `Agent.steer()` 投递的 user 消息，不认证第三方调用是否来自真人。
+- 不保证未经测试的新版本始终兼容，也不代表上游已合并修复。隔离 Mock 测试不等于真实模型效果或生产延迟。
 
-这些方法装饰不是官方专用扩展 hook。提前缓存旧 bound 方法、其他插件装饰同一方法、事件语义或 ABI 变化都可能影响兼容。检测到不支持的输入形状或成功 schema 时保留原等待并告警；模块 ABI 不符时可能加载失败。
+[开发与复现](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/docs/development.md) · [验证矩阵](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/docs/verification.md) · [安全说明](SECURITY.md) · [问题反馈](https://github.com/jidekaixin2dian/dsh-team-flow/issues)
 
-**兼容目标从 0.2.0-rc.2 起持续维护，不锁死 commit 或版本上限。尚未发布版本无法提前承诺永远兼容；破坏性变化可能要求更新插件。** peer `*` 用于复用宿主，不代表所有版本已测试。“user Steer”指通过 `Agent.steer()` 投递的 user 消息，不认证任意第三方调用是否来自真人。
+反馈请附 DSH / Node / OS 版本、Native 或 PTC、Steer / Queue 设置与最小复现，隐藏凭据、认证链接和私人会话内容。
 
-## 从源码复现
-
-Node >=24，Git，pnpm。宿主 checkout 与 DSH_HOME 均在本仓库 `work/` 内；不会读取正式 DSH 会话。首次准备下载官方源码与锁定依赖，所有模型调用使用 Mock，不需要 API Key。
-
-```powershell
-npm ci --ignore-scripts
-npm run setup:host
-npm run build
-npm run typecheck
-npm test
-npm run pack:local
-npm run test:market
-```
-
-默认准备和验证 `0.2.1-rc.3`。已有相同固定 commit 的干净宿主 checkout 时，可给 typecheck 和 test 传 `-- --host-path <绝对路径>`，无需重复安装依赖。旧版矩阵统一传 `-- --host alpha1`、`-- --host alpha2` 或 `-- --host rc2` 给 setup、typecheck 和 test；原 `--alpha1` 参数继续可用。Windows GitHub Actions 持续运行这四档公开源码；旧 `0.2.0-rc.2` 的安装文件副本不会被上传，保留本地脱敏证据。
-
-## 反馈
-
-欢迎通过 [Issues](https://github.com/jidekaixin2dian/dsh-team-flow/issues) 提供 DSH / Node / OS 版本、Native 或 PTC、Steer / Queue 设置、最小步骤和脱敏日志。不要附 API Key、会话原文或认证链接。安全问题见 [SECURITY.md](SECURITY.md)。
-
-MIT。独立社区项目，与 DeepSeek 官方无隶属关系；不宣称这是上游已经合并的修复。
+MIT · 独立社区插件，与 DeepSeek 官方无隶属关系。

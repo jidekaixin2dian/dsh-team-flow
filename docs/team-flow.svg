@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 310" role="img" aria-labelledby="title desc">
+<title id="title">Team Flow</title><desc id="desc">A user Steer ends one Lead wait. Teammates keep running.</desc>
+<rect width="1080" height="310" rx="20" fill="#101b2c"/>
+<g font-family="Segoe UI,Arial,sans-serif"><text x="42" y="48" font-size="14" letter-spacing="3" fill="#92a8c3">DSH / AGENT TEAMS</text>
+<text x="42" y="90" font-size="31" font-weight="600" fill="#f0f5fc">Keep the conversation moving.</text>
+<g fill="#192b43" stroke="#3c5270"><rect x="42" y="130" width="260" height="85" rx="12"/><rect x="412" y="130" width="260" height="85" rx="12"/><rect x="782" y="130" width="256" height="85" rx="12"/></g>
+<g font-size="23" font-weight="600" fill="#f0f5fc"><text x="65" y="166">User Steer</text><text x="435" y="166">Lead resumes</text><text x="805" y="166">Team continues</text></g>
+<g font-size="15" fill="#b4c7de"><text x="65" y="194">Original message</text><text x="435" y="194">One wait ends</text><text x="805" y="194">Teammates stay active</text></g>
+<g fill="none" stroke="#75d8bd" stroke-width="3"><path d="M320 172h70m-12-8 12 8-12 8M690 172h70m-12-8 12 8-12 8"/></g>
+<text x="42" y="268" font-size="15" fill="#92a8c3">ALPHA PREVIEW · Workflow illustration · Queue retains its native behavior</text></g></svg>
