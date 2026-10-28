@@ -1,0 +1,18 @@
+
+ RUN  v4.1.11 <plugin>
+
+ ✓ tests/compatibility.spec.ts (15 tests) 15255ms
+   ✓ host compatibility: plugin alone distinguishes Steer/Queue/user inject and returns success  304ms
+   ✓ host compatibility: 20 repeated waits consume each original Steer exactly once  2618ms
+   ✓ host compatibility: uncaught real Node PTC continues after wait success  856ms
+   ✓ host compatibility: ordinary timeout remains timedOut true  10080ms
+ ✓ tests/rc2.spec.ts (1 test) 242ms
+ ✓ tests/register.spec.ts (1 test) 116ms
+ ✓ tests/bundle.spec.ts (1 test) 4ms
+
+ Test Files  4 passed (4)
+      Tests  18 passed (18)
+   Start at  12:12:09
+   Duration  19.37s (transform 2.02s, setup 0ms, import 3.09s, tests 15.62s, environment 0ms)
+
+JSON report written to <plugin>/work/results/rc4-test-HXv82k/vitest.json

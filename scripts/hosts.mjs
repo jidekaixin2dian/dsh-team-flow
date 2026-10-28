@@ -5,11 +5,12 @@ export const hosts = {
   alpha2: { tag: 'dsh-v0.2.1-alpha.2', sha: 'd743267388641bc76f17c45ce8b4c231aed1d32c' },
   rc2: { tag: 'dsh-v0.2.1-rc.2', sha: '687f282e8625c6b8d11ff58211a90524be2e4317' },
   rc3: { tag: 'dsh-v0.2.1-rc.3', sha: '1f81c047fc48fa190a683e469daa699857e9afe8' },
+  rc4: { tag: 'dsh-v0.2.1-rc.4', sha: '504a01a9578abc2c6f1fb896b1dc322c9fe24f66' },
 }
 
 /** Shared version selection keeps setup, semantic checks and runtime tests aligned. */
 export function selectHost(argv = process.argv.slice(2)) {
-  let key = 'rc3', directory
+  let key = 'rc4', directory
   const forwarded = []
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--alpha1') key = 'alpha1'

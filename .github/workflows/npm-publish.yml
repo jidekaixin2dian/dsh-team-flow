@@ -1,0 +1,55 @@
+name: npm publish
+
+# Manual publish with provenance via npm trusted publishing (OIDC): the
+# GitHub Actions run identity authenticates without a token or OTP. Requires
+# the package's Trusted Publisher entry on npmjs.com to match this repository
+# and workflow filename. id-token: write lets npm attach the provenance
+# statement.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Select this same tag in Use workflow from; its GitHub archive will also be published to npm
+        required: true
+        type: string
+
+concurrency:
+  group: npm-publish-${{ inputs.tag }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      id-token: write
+    env:
+      RELEASE_TAG: ${{ inputs.tag }}
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.18.1'
+          registry-url: https://registry.npmjs.org
+          cache: npm
+      - run: npm ci --ignore-scripts --legacy-peer-deps
+      - run: npm run test:release
+      - run: npm run pack:local
+      - name: Require tagged main source and successful pinned-host validation
+        run: node scripts/release-preflight.mjs "$RELEASE_TAG"
+      - name: Download and verify the same archive used by GitHub users
+        run: |
+          mkdir -p work/release
+          gh release download "$RELEASE_TAG" --pattern dsh-team-flow-continuous-${RELEASE_TAG#v}.tgz --dir work/release
+          python3 scripts/verify-release.py --tag "$RELEASE_TAG" --archive work/release/dsh-team-flow-continuous-${RELEASE_TAG#v}.tgz
+      - name: Publish the verified GitHub archive without rebuilding it
+        run: npm publish work/release/dsh-team-flow-continuous-${RELEASE_TAG#v}.tgz --ignore-scripts --provenance --access public --tag latest

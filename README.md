@@ -19,20 +19,20 @@ DSH Agent Teams 的主代理可能停在 `wait_agent`。Team Flow 让同会话�
 
 ## 安装与更新
 
-需要 **DSH >=0.2.0-rc.2、Node >=24**，并先启用官方 **Agent Teams**。当前持续验证 DSH 0.2.1-alpha.1 / alpha.2 / rc.2 / rc.3；详细范围见[验证记录](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/docs/verification.md)。
+需要 **DSH >=0.2.0-rc.2、Node >=24**，并先启用官方 **Agent Teams**。当前持续验证 DSH 0.2.1-alpha.1 / alpha.2 / rc.2 / rc.3 / rc.4；详细范围见[验证记录](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/docs/verification.md)。
 
-在市场搜索 **dsh-team-flow**，确认来源 **jidekaixin2dian/dsh-team-flow**。GitHub 安装源包含预构建文件，无需批准安装脚本；已有源安装可在「已安装」检查版本更新。市场目录更新前，可使用下面的命令。
+在市场搜索 **dsh-team-flow**，确认来源 **jidekaixin2dian/dsh-team-flow**。npm 包与 GitHub 源都包含预构建文件，无需批准安装脚本。市场识别 npm 包后会优先使用 npm；已有源安装也可检查版本更新。npm 默认通道仍是 alpha 预览版，不代表正式稳定版。
 
 1. 等所有 Agent 空闲，备份自己的 profile；建议使用测试 profile。
 2. 启用官方 Agent Teams，然后安装本插件：
 
 ```powershell
-dsh plugin --profile <test-profile> add github:jidekaixin2dian/dsh-team-flow
+dsh plugin --profile <test-profile> add dsh-team-flow-continuous --registry=https://registry.npmjs.org
 ```
 
 3. 确认本插件排在 Agent Teams bundle **之后**。按宿主要求重启，再开新会话，使用 Steer / 插话。
 
-再次执行安装命令可更新。之前安装旧版 `.tgz` 的用户可用同一 profile 执行此命令切换到 GitHub 源，之后再由市场检查更新。Enter 是否执行 Steer 取决于 DSH 发送设置。
+再次执行安装命令可更新。之前安装旧版 `.tgz` 的用户可用同一 profile 执行此命令切换到 npm 源，之后再由市场检查更新。Enter 是否执行 Steer 取决于 DSH 发送设置。
 
 <details>
 <summary>安装顺序、停用与卸载</summary>
@@ -48,6 +48,8 @@ dsh plugin --profile <test-profile> remove dsh-team-flow-continuous
 等待 Agent 空闲后再停用或卸载。活动 wait 被停用时会返回 `TEAM_FLOW_RC2_DISABLED`；未捕获它的 PTC 程序可能停止后续语句。
 
 </details>
+
+更新由市场检查并在你点击后安装，不会静默后台升级；需要时按提示重启 DSH。
 
 ## 兼容边界
 

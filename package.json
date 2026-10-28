@@ -1,7 +1,6 @@
 {
   "name": "dsh-team-flow-continuous",
-  "version": "0.2.0-alpha.8",
-  "private": true,
+  "version": "0.2.0-alpha.9",
   "license": "MIT",
   "description": "Let user Steer end a single Agent Teams wait while teammates keep running.",
   "type": "module",
@@ -96,6 +95,11 @@
     "test": "node tests/run.mjs",
     "test:market": "node tests/market.mjs",
     "typecheck": "node scripts/typecheck.mjs",
-    "pack:local": "node scripts/pack.mjs"
+    "pack:local": "node scripts/pack.mjs",
+    "test:release": "node --test tests/release.test.mjs"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

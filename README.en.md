@@ -19,20 +19,20 @@ Team Flow lets a same-session user **Steer** end the Lead's current Agent Teams 
 
 ## Install and update
 
-Requires **DSH >=0.2.0-rc.2 and Node >=24**, with official **Agent Teams** enabled first. CI covers DSH 0.2.1-alpha.1 / alpha.2 / rc.2 / rc.3. See the [verification matrix](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/docs/verification.md).
+Requires **DSH >=0.2.0-rc.2 and Node >=24**, with official **Agent Teams** enabled first. CI covers DSH 0.2.1-alpha.1 / alpha.2 / rc.2 / rc.3 / rc.4. See the [verification matrix](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/docs/verification.md).
 
-Search for **dsh-team-flow**, source **jidekaixin2dian/dsh-team-flow**, in the marketplace. GitHub source installs include prebuilt files and need no install-script approval. Source installs support checking version updates under installed plugins. Until the catalog refreshes, use the command below.
+Search for **dsh-team-flow**, source **jidekaixin2dian/dsh-team-flow**, in the marketplace. npm and GitHub installs include prebuilt files and need no install-script approval. The catalog prefers npm once mapped; source installs also support version checks. The default npm channel is still an alpha preview, not a stable release.
 
 1. Wait for all Agents to become idle, back up your profile and preferably use a test profile.
 2. Enable official Agent Teams, then install:
 
 ```powershell
-dsh plugin --profile <test-profile> add github:jidekaixin2dian/dsh-team-flow
+dsh plugin --profile <test-profile> add dsh-team-flow-continuous --registry=https://registry.npmjs.org
 ```
 
 3. Keep this bundle **after** Agent Teams. Restart if requested, open a new conversation and use Steer.
 
-Run the same command to update. Existing `.tgz` installations can run it in the same profile to switch to the GitHub source for future marketplace update checks. Enter's behavior depends on DSH's send settings.
+Run the same command to update. Existing `.tgz` installations can run it in the same profile to switch to the npm source for future marketplace update checks. Enter's behavior depends on DSH's send settings.
 
 <details>
 <summary>Ordering, disabling and removal</summary>
@@ -48,6 +48,8 @@ dsh plugin --profile <test-profile> remove dsh-team-flow-continuous
 Operate while Agents are idle. Disabling an active wait returns `TEAM_FLOW_RC2_DISABLED`; uncaught PTC code may stop subsequent statements.
 
 </details>
+
+The marketplace checks versions and installs after your click; it does not silently upgrade in the background. Restart DSH when requested.
 
 ## Compatibility boundaries
 

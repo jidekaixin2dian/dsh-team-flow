@@ -1,0 +1,9 @@
+{
+  "host": "504a01a9578abc2c6f1fb896b1dc322c9fe24f66",
+  "hostVersion": "0.2.1-rc.4",
+  "platform": "win32",
+  "node": "v24.22.1",
+  "testsPassed": 18,
+  "modelTraffic": "Mock",
+  "fullDesktopUIVerified": false
+}
