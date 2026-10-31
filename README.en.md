@@ -4,7 +4,9 @@
 
 [中文](README.md) · [Marketplace](https://awesome-dsh-plugin.com/p/jidekaixin2dian/dsh-team-flow/) · [Preview downloads](https://github.com/jidekaixin2dian/dsh-team-flow/releases) · [Changelog](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/CHANGELOG.md)
 
-Team Flow lets a same-session user **Steer** end the Lead's current Agent Teams `wait_agent` call. The native AgentLoop then consumes the original message. Teammates continue working and Queue retains its semantics.
+Team Flow is an Agent Teams steering plugin for DeepSeek Harness (DSH). A same-session user can **Steer** the Lead while it is waiting in `wait_agent`, ending that one wait so the native AgentLoop can consume the original message. Teammates continue working and Queue retains its semantics.
+
+For example, while agents work in parallel, send the Lead a Steer to add a requirement without waiting for the current teammate wait to finish naturally. Normal sends and Queue are not converted to Steer.
 
 ![Steer ends one Lead wait while teammates continue; workflow illustration](https://raw.githubusercontent.com/jidekaixin2dian/dsh-team-flow/main/docs/team-flow.svg)
 
