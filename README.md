@@ -4,7 +4,9 @@
 
 [English](README.en.md) · [插件市场](https://awesome-dsh-plugin.com/p/jidekaixin2dian/dsh-team-flow/) · [下载预览版](https://github.com/jidekaixin2dian/dsh-team-flow/releases) · [更新记录](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/CHANGELOG.md)
 
-DSH Agent Teams 的主代理可能停在 `wait_agent`。Team Flow 让同会话的用户 **Steer / 插话** 结束当前这一次等待，再由原生 AgentLoop 领取原消息；队友不会被停止，Queue 仍按原语义排队。
+Team Flow 是 DeepSeek Harness（DSH）的 Agent Teams 插话插件。主代理等待队友、停在 `wait_agent` 时，同会话的用户可以用 **Steer / 插话** 结束当前这一次等待，让原生 AgentLoop 继续领取原消息；队友不会被停止，Queue 仍按原语义排队。
+
+例如，多代理并行处理任务时，你想补充一条要求，不必等这次队友等待自然结束：对 Lead 使用 Steer，主代理继续接收你的消息，队友仍可继续工作。它不把普通发送或 Queue 改成 Steer。
 
 ![Steer 结束主代理等待，队友继续工作的流程示意](https://raw.githubusercontent.com/jidekaixin2dian/dsh-team-flow/main/docs/team-flow.svg)
 
