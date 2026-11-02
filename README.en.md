@@ -2,7 +2,7 @@
 
 **Steer the Lead while it waits. Let teammates keep working.**
 
-[中文](README.md) · [Marketplace](https://awesome-dsh-plugin.com/p/jidekaixin2dian/dsh-team-flow/) · [Preview downloads](https://github.com/jidekaixin2dian/dsh-team-flow/releases) · [Changelog](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/CHANGELOG.md)
+[中文](README.md) · [Marketplace](https://awesome-dsh-plugin.com/p/jidekaixin2dian/dsh-team-flow/) · [Downloads](https://github.com/jidekaixin2dian/dsh-team-flow/releases) · [Changelog](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/CHANGELOG.md)
 
 Team Flow is an Agent Teams steering plugin for DeepSeek Harness (DSH). A same-session user can **Steer** the Lead while it is waiting in `wait_agent`, ending that one wait so the native AgentLoop can consume the original message. Teammates continue working and Queue retains its semantics.
 
@@ -10,7 +10,7 @@ For example, while agents work in parallel, send the Lead a Steer to add a requi
 
 ![Steer ends one Lead wait while teammates continue; workflow illustration](https://raw.githubusercontent.com/jidekaixin2dian/dsh-team-flow/main/docs/team-flow.svg)
 
-> **Alpha preview.** Start with an isolated profile. Isolated host and Node PTC behavior are tested; complete Desktop UI, SSH, Python PTC and arbitrary third-party plugin combinations remain unverified.
+> Start with an isolated profile: isolated host and Node PTC behavior are tested; complete Desktop UI, SSH, Python PTC and arbitrary third-party plugin combinations remain unverified.
 
 | Input | Behavior |
 |---|---|
@@ -23,7 +23,7 @@ For example, while agents work in parallel, send the Lead a Steer to add a requi
 
 Requires **DSH >=0.2.0-rc.2 and Node >=24**, with official **Agent Teams** enabled first. CI covers DSH 0.2.1-alpha.1 / alpha.2 / rc.2 / rc.3 / rc.4. See the [verification matrix](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/docs/verification.md).
 
-Search for **dsh-team-flow**, source **jidekaixin2dian/dsh-team-flow**, in the marketplace. npm and GitHub installs include prebuilt files and need no install-script approval. The catalog prefers npm once mapped; source installs also support version checks. The default npm channel is still an alpha preview, not a stable release.
+Search for **dsh-team-flow**, source **jidekaixin2dian/dsh-team-flow**, in the marketplace. npm and GitHub installs include prebuilt files and need no install-script approval. The catalog prefers npm once mapped; source installs also support version checks. The default npm channel serves stable releases.
 
 1. Wait for all Agents to become idle, back up your profile and preferably use a test profile.
 2. Enable official Agent Teams, then install:

@@ -2,7 +2,7 @@
 
 **主代理等队友时，你仍然可以插话。队友继续工作。**
 
-[English](README.en.md) · [插件市场](https://awesome-dsh-plugin.com/p/jidekaixin2dian/dsh-team-flow/) · [下载预览版](https://github.com/jidekaixin2dian/dsh-team-flow/releases) · [更新记录](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/CHANGELOG.md)
+[English](README.en.md) · [插件市场](https://awesome-dsh-plugin.com/p/jidekaixin2dian/dsh-team-flow/) · [下载](https://github.com/jidekaixin2dian/dsh-team-flow/releases) · [更新记录](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/CHANGELOG.md)
 
 Team Flow 是 DeepSeek Harness（DSH）的 Agent Teams 插话插件。主代理等待队友、停在 `wait_agent` 时，同会话的用户可以用 **Steer / 插话** 结束当前这一次等待，让原生 AgentLoop 继续领取原消息；队友不会被停止，Queue 仍按原语义排队。
 
@@ -10,7 +10,7 @@ Team Flow 是 DeepSeek Harness（DSH）的 Agent Teams 插话插件。主代理�
 
 ![Steer 结束主代理等待，队友继续工作的流程示意](https://raw.githubusercontent.com/jidekaixin2dian/dsh-team-flow/main/docs/team-flow.svg)
 
-> **Alpha 预览版。** 请先在隔离 profile 试用。已做隔离宿主与 Node PTC 验证；正式 Desktop UI、SSH、Python PTC 和任意第三方插件组合尚未完整验收。
+> 请先在隔离 profile 试用：已做隔离宿主与 Node PTC 验证；正式 Desktop UI、SSH、Python PTC 和任意第三方插件组合尚未完整验收。
 
 | 输入 | 结果 |
 |---|---|
@@ -23,7 +23,7 @@ Team Flow 是 DeepSeek Harness（DSH）的 Agent Teams 插话插件。主代理�
 
 需要 **DSH >=0.2.0-rc.2、Node >=24**，并先启用官方 **Agent Teams**。当前持续验证 DSH 0.2.1-alpha.1 / alpha.2 / rc.2 / rc.3 / rc.4；详细范围见[验证记录](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/docs/verification.md)。
 
-在市场搜索 **dsh-team-flow**，确认来源 **jidekaixin2dian/dsh-team-flow**。npm 包与 GitHub 源都包含预构建文件，无需批准安装脚本。市场识别 npm 包后会优先使用 npm；已有源安装也可检查版本更新。npm 默认通道仍是 alpha 预览版，不代表正式稳定版。
+在市场搜索 **dsh-team-flow**，确认来源 **jidekaixin2dian/dsh-team-flow**。npm 包与 GitHub 源都包含预构建文件，无需批准安装脚本。市场识别 npm 包后会优先使用 npm；已有源安装也可检查版本更新。npm 默认通道为正式版本。
 
 1. 等所有 Agent 空闲，备份自己的 profile；建议使用测试 profile。
 2. 启用官方 Agent Teams，然后安装本插件：
