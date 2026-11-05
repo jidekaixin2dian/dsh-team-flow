@@ -6,6 +6,9 @@ export const hosts = {
   rc2: { tag: 'dsh-v0.2.1-rc.2', sha: '687f282e8625c6b8d11ff58211a90524be2e4317' },
   rc3: { tag: 'dsh-v0.2.1-rc.3', sha: '1f81c047fc48fa190a683e469daa699857e9afe8' },
   rc4: { tag: 'dsh-v0.2.1-rc.4', sha: '504a01a9578abc2c6f1fb896b1dc322c9fe24f66' },
+  // 0.2.2-rc.1 restructures tool execution per Agent scope — the surface this
+  // plugin decorates — so it is verified explicitly before becoming default.
+  rc1: { tag: 'dsh-v0.2.2-rc.1', sha: '66491b05e3f05ad35bcdd4f6cd7ed26041d9e3db' },
 }
 
 /** Shared version selection keeps setup, semantic checks and runtime tests aligned. */

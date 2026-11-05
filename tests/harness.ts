@@ -92,7 +92,19 @@ export async function setup(scenario: string, options: { ptc?: string; spike?: b
     await expect.poll(() => adapter.requests.length).toBe(1)
     expect(child?.status).toBe('running')
   }
-  const execute = (name: string, args: object, signal = new AbortController().signal, agent: Agent = lead) => ctx.tools.execute({ callId: ToolCallId(`direct-${++call}`), name, arguments: args, signal, agent })
+  // 0.2.2 moved tools.execute to raw call batches (tools.executable marks the
+  // generation); older hosts take one typed call and resolve to its outcome.
+  const execute = async (name: string, args: object, signal = new AbortController().signal, agent: Agent = lead) => {
+    const tools = ctx.tools as any
+    if (typeof tools.executable === 'function') {
+      const batch = await tools.execute({
+        agent, signal,
+        calls: [{ id: ToolCallId(`direct-${++call}`), name, arguments: JSON.stringify(args) }],
+      })
+      return batch.results[0].result
+    }
+    return tools.execute({ callId: ToolCallId(`direct-${++call}`), name, arguments: args, signal, agent })
+  }
   const release = async () => {
     record('control/team-change')
     const result = await execute('team_task_create', { subject: 'M2 release', description: 'real Team event' })
