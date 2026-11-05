@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased
+
+- 兼容验证扩展到 DSH **0.2.2-rc.1**（`66491b05`）：严格 TypeScript 检查与 18 项
+  隔离矩阵全部通过（`--host rc1`，CI 矩阵同步加入该 pin）。0.2.2 将
+  `tools.execute` 改为原始调用批量、执行器按 Agent 作用域拆分——测试驱动以
+  `tools.executable` 探测双代际并适配，生产代码不直接调用 `tools.execute`，
+  wait_agent 装饰、Steer 唤醒、Node PTC 续跑与卸载还原行为不变。
+- Extend verified host coverage to DSH **0.2.2-rc.1**: the strict TypeScript
+  check and the full 18-item isolated matrix pass (`--host rc1`; the CI matrix
+  gains the pin). 0.2.2 reshaped `tools.execute` into raw call batches and
+  split executors per Agent scope — the test driver probes `tools.executable`
+  and speaks both generations, production code never calls `tools.execute`
+  directly, and wait_agent decoration, Steer wake, Node PTC continuation and
+  unload restoration are unchanged.
+- `tests/rc2.spec.ts` 的 interrupt 检查宿主名单加入 rc1：`interrupt=false`
+  选项延续到 0.2.2，此前该检查在新 pin 上被跳过。
+- The interrupt check in `tests/rc2.spec.ts` now also runs on the rc1 pin:
+  the `interrupt=false` option carries into 0.2.2, where it was previously
+  skipped.
+
 ## 0.2.0 — 2026-11-03
 
 - 版本命名转正：不再使用 `-alpha.N` 后缀，与 File Actions / Toolgate 一致采用纯 semver 版本号；0.2.0 高于 0.2.0-alpha.9，旧预览版用户可正常收到更新提示。

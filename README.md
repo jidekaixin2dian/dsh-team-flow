@@ -21,7 +21,7 @@ Team Flow 是 DeepSeek Harness（DSH）的 Agent Teams 插话插件。主代理�
 
 ## 安装与更新
 
-需要 **DSH >=0.2.0-rc.2、Node >=24**，并先启用官方 **Agent Teams**。当前持续验证 DSH 0.2.1-alpha.1 / alpha.2 / rc.2 / rc.3 / rc.4；详细范围见[验证记录](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/docs/verification.md)。
+需要 **DSH >=0.2.0-rc.2、Node >=24**，并先启用官方 **Agent Teams**。当前持续验证 DSH 0.2.1-alpha.1 / alpha.2 / rc.2 / rc.3 / rc.4 / 0.2.2-rc.1；详细范围见[验证记录](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/docs/verification.md)。
 
 在市场搜索 **dsh-team-flow**，确认来源 **jidekaixin2dian/dsh-team-flow**。npm 包与 GitHub 源都包含预构建文件，无需批准安装脚本。市场识别 npm 包后会优先使用 npm；已有源安装也可检查版本更新。npm 默认通道为正式版本。
 
