@@ -2,15 +2,15 @@
 
 **主代理等队友时，你仍然可以插话。队友继续工作。**
 
-[English](README.en.md) · [插件市场](https://awesome-dsh-plugin.com/p/jidekaixin2dian/dsh-team-flow/) · [下载](https://github.com/jidekaixin2dian/dsh-team-flow/releases) · [更新记录](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/CHANGELOG.md)
+[English](README.en.md) · [npm · 0.2.0](https://www.npmjs.com/package/dsh-team-flow-continuous/v/0.2.0) · [插件市场](https://awesome-dsh-plugin.com/p/jidekaixin2dian/dsh-team-flow/) · [下载](https://github.com/jidekaixin2dian/dsh-team-flow/releases) · [更新记录](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/CHANGELOG.md)
 
 Team Flow 是 DeepSeek Harness（DSH）的 Agent Teams 插话插件。主代理等待队友、停在 `wait_agent` 时，同会话的用户可以用 **Steer / 插话** 结束当前这一次等待，让原生 AgentLoop 继续领取原消息；队友不会被停止，Queue 仍按原语义排队。
 
-例如，多代理并行处理任务时，你想补充一条要求，不必等这次队友等待自然结束：对 Lead 使用 Steer，主代理继续接收你的消息，队友仍可继续工作。它不把普通发送或 Queue 改成 Steer。
+## 团队继续做，你也能补充要求
+
+多代理并行工作、Lead 正在等待结果时，使用 **Steer / 插话** 补充要求或调整方向。主代理继续接收你的消息，队友手头的任务继续运行；Queue 和普通发送保持原有行为。
 
 ![Steer 结束主代理等待，队友继续工作的流程示意](https://raw.githubusercontent.com/jidekaixin2dian/dsh-team-flow/main/docs/team-flow.svg)
-
-> 请先在隔离 profile 试用：已做隔离宿主与 Node PTC 验证；正式 Desktop UI、SSH、Python PTC 和任意第三方插件组合尚未完整验收。
 
 | 输入 | 结果 |
 |---|---|
@@ -60,6 +60,14 @@ dsh plugin --profile <test-profile> remove dsh-team-flow-continuous
 - 方法装饰不是专用官方扩展 hook；其他装饰器、缓存方法或 ABI 变化可能冲突。不支持的契约在可检测时保留原等待并告警，模块不兼容也可能加载失败。
 - `user Steer` 表示经 `Agent.steer()` 投递的 user 消息，不认证第三方调用是否来自真人。
 - 不保证未经测试的新版本始终兼容，也不代表上游已合并修复。隔离 Mock 测试不等于真实模型效果或生产延迟。
+
+## 下载情况
+
+| GitHub 安装包 | npm | 合计 |
+|---:|---:|---:|
+| [794](https://api.github.com/repos/jidekaixin2dian/dsh-team-flow/releases?per_page=100) | [379](https://api.npmjs.org/downloads/point/2026-10-28:2026-11-04/dsh-team-flow-continuous) | **1,173 次** |
+
+统计于 2026-11-06；npm 数据截至 2026-11-04。GitHub 仅计安装包，npm 排除 `0.0.0-stage`。下载包含重复安装与自动化请求，不是独立用户数。
 
 [开发与复现](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/docs/development.md) · [验证矩阵](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/docs/verification.md) · [安全说明](SECURITY.md) · [问题反馈](https://github.com/jidekaixin2dian/dsh-team-flow/issues)
 

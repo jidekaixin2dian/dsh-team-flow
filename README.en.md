@@ -2,15 +2,15 @@
 
 **Steer the Lead while it waits. Let teammates keep working.**
 
-[中文](README.md) · [Marketplace](https://awesome-dsh-plugin.com/p/jidekaixin2dian/dsh-team-flow/) · [Downloads](https://github.com/jidekaixin2dian/dsh-team-flow/releases) · [Changelog](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/CHANGELOG.md)
+[中文](README.md) · [npm · 0.2.0](https://www.npmjs.com/package/dsh-team-flow-continuous/v/0.2.0) · [Marketplace](https://awesome-dsh-plugin.com/p/jidekaixin2dian/dsh-team-flow/) · [Downloads](https://github.com/jidekaixin2dian/dsh-team-flow/releases) · [Changelog](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/CHANGELOG.md)
 
 Team Flow is an Agent Teams steering plugin for DeepSeek Harness (DSH). A same-session user can **Steer** the Lead while it is waiting in `wait_agent`, ending that one wait so the native AgentLoop can consume the original message. Teammates continue working and Queue retains its semantics.
 
-For example, while agents work in parallel, send the Lead a Steer to add a requirement without waiting for the current teammate wait to finish naturally. Normal sends and Queue are not converted to Steer.
+## Add a requirement while the team works
+
+When the Lead is waiting for parallel tasks, send a Steer to add a requirement or redirect the task. The Lead can receive your message while teammates continue their work. Queue and normal sends keep their original behavior.
 
 ![Steer ends one Lead wait while teammates continue; workflow illustration](https://raw.githubusercontent.com/jidekaixin2dian/dsh-team-flow/main/docs/team-flow.svg)
-
-> Start with an isolated profile: isolated host and Node PTC behavior are tested; complete Desktop UI, SSH, Python PTC and arbitrary third-party plugin combinations remain unverified.
 
 | Input | Behavior |
 |---|---|
@@ -60,6 +60,14 @@ The marketplace checks versions and installs after your click; it does not silen
 - Decorated methods are not dedicated extension hooks. Other decorators, cached methods or ABI changes can conflict. Detectable unsupported contracts retain native waiting with a warning; module incompatibility may prevent loading.
 - User Steer means a user message delivered through `Agent.steer()`, not authentication that a third-party caller is human.
 - Future host compatibility is not guaranteed and this is not an upstream-merged fix. Isolated Mock checks do not establish real-model behavior or production latency.
+
+## Downloads
+
+| GitHub archives | npm | Combined |
+|---:|---:|---:|
+| [794](https://api.github.com/repos/jidekaixin2dian/dsh-team-flow/releases?per_page=100) | [379](https://api.npmjs.org/downloads/point/2026-10-28:2026-11-04/dsh-team-flow-continuous) | **1,173 requests** |
+
+Snapshot: 2026-11-06; npm data through 2026-11-04. GitHub counts installation archives; npm excludes `0.0.0-stage`. Includes repeat installs and automation, not unique users.
 
 [Development](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/docs/development.md) · [Verification](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/docs/verification.md) · [Security](SECURITY.md) · [Issues](https://github.com/jidekaixin2dian/dsh-team-flow/issues)
 
