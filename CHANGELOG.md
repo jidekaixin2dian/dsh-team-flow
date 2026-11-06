@@ -1,6 +1,9 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 — 2026-11-06
+
+- 版本命名转正：不再使用 `-alpha.N` 后缀，与 File Actions / Toolgate 一致采用纯 semver 版本号；0.2.0 高于 0.2.0-alpha.9，旧预览版用户可正常收到更新提示。
+- npm 默认通道与 GitHub Release 从预览版转为正式版本；运行时代码与 0.2.0-alpha.9 完全一致，本轮只改版本元数据与相关说明。
 
 - 兼容验证扩展到 DSH **0.2.2-rc.1**（`66491b05`）：严格 TypeScript 检查与 18 项
   隔离矩阵全部通过（`--host rc1`，CI 矩阵同步加入该 pin）。0.2.2 将
@@ -19,11 +22,6 @@
 - The interrupt check in `tests/rc2.spec.ts` now also runs on the rc1 pin:
   the `interrupt=false` option carries into 0.2.2, where it was previously
   skipped.
-
-## 0.2.0 — 2026-11-03
-
-- 版本命名转正：不再使用 `-alpha.N` 后缀，与 File Actions / Toolgate 一致采用纯 semver 版本号；0.2.0 高于 0.2.0-alpha.9，旧预览版用户可正常收到更新提示。
-- npm 默认通道与 GitHub Release 从预览版转为正式版本；运行时代码与 0.2.0-alpha.9 完全一致，本轮只改版本元数据与相关说明。
 
 ## 0.2.0-alpha.9 — 2026-10-28
 
