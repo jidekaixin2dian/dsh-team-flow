@@ -2,7 +2,7 @@
   "name": "dsh-team-flow-continuous",
   "version": "0.2.0",
   "license": "MIT",
-  "description": "Let user Steer end a single Agent Teams wait while teammates keep running.",
+  "description": "Use Steer to end the Lead's current wait and add instructions while teammates keep working.",
   "type": "module",
   "main": "lib/index.js",
   "icon": "./icon.svg",
@@ -12,9 +12,11 @@
       "default": "./lib/index.js"
     },
     "./package.json": "./package.json",
-    "./cordis.patch.yml": "./cordis.patch.yml"
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./locale/*.json": "./locale/*.json"
   },
   "files": [
+    "locale/*.json",
     "lib/*.js",
     "lib/*.d.ts",
     "cordis.patch.yml",
