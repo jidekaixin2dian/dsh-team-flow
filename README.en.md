@@ -55,7 +55,8 @@ The marketplace checks versions and installs after your click; it does not silen
 
 ## Compatibility boundaries
 
-- Steer can end a `wait_agent` call early. During a foreground `workflow` or another long-running tool, the Lead picks up the message at the next step boundary. If the host exposes `run_in_background`, pass `run_in_background: true` to `workflow` for long tasks so the Lead can continue processing Steer messages.
+- On DSH 0.2.2-rc.1, if a user Steer is already queued, Team Flow defers a foreground `workflow` called directly by the Lead. The Lead can reconsider the call after reading the message in its next step.
+- Steer can end a `wait_agent` call early. During a foreground `workflow` that already started, a `workflow` inside `run_code`, or another long-running tool, the Lead picks up Steer at the next step boundary. If the host exposes `run_in_background`, pass `run_in_background: true` to `workflow` for long tasks so the Lead can continue processing Steer messages.
 - Reversible runtime decorators reuse the host's own Team tools without patching host source or installation files.
 - The plugin does not cancel Agents, consume Inbox messages or resend input. Its successful wake result is `{timedOut:false, reason:'user-steer'}`, not a fabricated timeout.
 - Decorated methods are not dedicated extension hooks. Other decorators, cached methods or ABI changes can conflict. Detectable unsupported contracts retain native waiting with a warning; module incompatibility may prevent loading.
