@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1 — 2026-11-10
+
+- Lead 有待处理的用户 Steer 时，延后尚未启动的前台 `workflow`，让宿主先处理插话。已运行的工作流和后台工作流继续执行。
+- Defer foreground `workflow` calls that have yet to start when the Lead has a pending user Steer. Running and background workflows continue.
+
 ## 0.2.0 — 2026-11-06
 
 - 版本命名转正：不再使用 `-alpha.N` 后缀，与 File Actions / Toolgate 一致采用纯 semver 版本号；0.2.0 高于 0.2.0-alpha.9，旧预览版用户可正常收到更新提示。
