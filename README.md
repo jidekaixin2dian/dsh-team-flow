@@ -55,7 +55,8 @@ dsh plugin --profile <test-profile> remove dsh-team-flow-continuous
 
 ## 兼容边界
 
-- Steer 只提前结束 `wait_agent`。前台 `workflow` 和其他长工具仍需等到当前 step 结束才会领取插话。宿主提供 `run_in_background` 时，可以用 `workflow` 的 `run_in_background: true` 在后台执行长任务，让主代理继续处理插话。
+- 在 DSH 0.2.2-rc.1 中，已有用户插话排队时，主代理直接发起的前台 `workflow` 会暂缓启动。主代理在下一步处理插话后，可以重新决定是否运行。
+- Steer 可以提前结束 `wait_agent`。已经启动的前台 `workflow`、`run_code` 内的 `workflow` 和其他长工具期间，插话在当前 step 结束后领取。宿主提供 `run_in_background` 时，可以用 `workflow` 的 `run_in_background: true` 在后台执行长任务，让主代理继续处理插话。
 - 使用可恢复的运行时方法装饰，复用宿主 Team 工具；没有修改宿主源码或安装文件。
 - 不取消 Agent、不消费或重发 Inbox 消息。成功值为 `{timedOut:false, reason:'user-steer'}`，不是伪造 timeout。
 - 方法装饰不是专用官方扩展 hook；其他装饰器、缓存方法或 ABI 变化可能冲突。不支持的契约在可检测时保留原等待并告警，模块不兼容也可能加载失败。

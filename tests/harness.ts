@@ -26,7 +26,7 @@ export const delay = (ms: number) => new Promise<void>(resolve => setTimeout(res
 export const input = (kind: 'user' | 'm2-fixture' = 'user') => createUserMessage({ content: [{ type: 'text', text: 'synthetic M2 input' }], source: { kind } })
 let call = 0
 
-export async function setup(scenario: string, options: { ptc?: string; spike?: boolean; child?: boolean; toolTeam?: boolean; prepare?: (ctx: Context, root: string) => Promise<void> } = {}) {
+export async function setup(scenario: string, options: { ptc?: string; spike?: boolean; child?: boolean; toolTeam?: boolean; leadResponse?: ReturnType<typeof toolCallResponse>; prepare?: (ctx: Context, root: string) => Promise<void> } = {}) {
   if (!process.env.M2_HOME || process.env.DSH_HOME !== process.env.M2_HOME) throw new Error('isolated M2_HOME is required')
   const root = mkdtempSync(join(process.env.M2_HOME, 'case-'))
   const ctx = new Context()
@@ -44,7 +44,7 @@ export async function setup(scenario: string, options: { ptc?: string; spike?: b
   await options.prepare?.(ctx, root)
   const adapter = new MockAdapter([
     ...(options.child === false ? [] : ['hang' as const]),
-    options.ptc ? toolCallResponse('outer-1', 'run_code', { description: 'M2 wait', code: options.ptc }) : toolCallResponse('wait-1', 'wait_agent', { timeout_ms: 10000 }),
+    options.leadResponse ?? (options.ptc ? toolCallResponse('outer-1', 'run_code', { description: 'M2 wait', code: options.ptc }) : toolCallResponse('wait-1', 'wait_agent', { timeout_ms: 10000 })),
     ...Array.from({ length: 12 }, () => textResponse('M2 continuation')),
   ])
   ctx.llm.registerAdapter(['mock'], adapter)

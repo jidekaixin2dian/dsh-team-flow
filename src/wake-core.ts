@@ -5,7 +5,7 @@ import type { Context } from '@deepseek-ai/cordis'
 import type { Agent } from '@deepseek-ai/dsh-agent'
 import type {} from '@deepseek-ai/dsh-experimental-agent-team'
 import { HarnessError } from '@deepseek-ai/dsh-llm'
-import { TOOL_ABORTED, type ToolExecutionResult } from '@deepseek-ai/dsh-tools'
+import { TOOL_ABORTED, type ToolDefinition, type ToolExecutionResult } from '@deepseek-ai/dsh-tools'
 
 
 export const name = 'dsh-team-flow-rc2'
@@ -15,6 +15,7 @@ export interface Diagnostics { active: number; wakes: number; decorated: number;
 export const Config: z<Config> = z.object({ freshProvider: z.string().default('spawn'), forkProvider: z.string().default('fork') })
 const SIGNAL = 'TEAM_FLOW_RC2_STEER'
 const DISABLED = 'TEAM_FLOW_RC2_DISABLED'
+const WORKFLOW_DEFERRED = 'TEAM_FLOW_WORKFLOW_DEFERRED'
 export function apply(ctx: Context, config: Config = {}): void { install(ctx, config) }
 
 export function install(ctx: Context, _config: Config = {}, observe?: (event: string, fields?: object) => void): { diagnostics: Diagnostics } {
@@ -24,6 +25,10 @@ export function install(ctx: Context, _config: Config = {}, observe?: (event: st
   const controllers = new Set<AbortController>()
   const flights = new Set<Promise<unknown>>()
   const record = (event: string, fields: object = {}) => observe?.(event, fields)
+  const hasPendingSteer = (agent: Agent): boolean => {
+    const ids = receipts.get(agent)
+    return !!ids?.size && Array.isArray(agent.inbox.nextStep) && agent.inbox.nextStep.some(message => ids.has(message.id))
+  }
   const attach = (agent: Agent) => {
     if (entries.has(agent) || diagnostics.disabled) return
     const original = agent.steer
@@ -72,7 +77,26 @@ export function install(ctx: Context, _config: Config = {}, observe?: (event: st
   })
   ctx.on('tools/execute', async (exec, next): Promise<ToolExecutionResult> => {
     const agent = exec.agent
-    if (diagnostics.disabled || exec.name !== 'wait_agent' || !agent || ctx.agentTeams.tryMembership(agent)?.role !== 'lead') return await next()
+    if (diagnostics.disabled || (exec.name !== 'wait_agent' && exec.name !== 'workflow') || !agent
+        || ctx.agentTeams.tryMembership(agent)?.role !== 'lead') return await next()
+    if (exec.name === 'workflow') {
+      const args = exec.arguments
+      // A nested tool error can unwind run_code and abort its in-flight siblings.
+      if (exec.parent !== undefined || exec.signal.aborted || !args || typeof args !== 'object'
+          || ('run_in_background' in args && args.run_in_background !== false)
+          || !hasPendingSteer(agent)) return await next()
+      const tools = ctx.tools
+      // Older hosts cannot resolve the admitted tool for this execution.
+      if (!('executable' in tools) || typeof tools.executable !== 'function') return await next()
+      const workflow: ToolDefinition | undefined = tools.executable('workflow', agent, 'toolSet' in exec ? exec.toolSet : undefined)
+      if (!workflow?.output.schema.oneOf?.some(branch => branch.properties?.kind?.const === 'foreground'
+          && ['kind', 'runId', 'agentsStarted', 'result'].every(field => branch.required?.includes(field)))
+          || validateJsonSchemaValue(workflow.parameters, args, 'arguments').length) return await next()
+      const message = 'Foreground workflow was deferred before starting. Process the pending user Steer before deciding whether to run it.'
+      record('compat/workflow-deferred')
+      return { isError: true, error: { message, info: { name: 'WorkflowDeferredError', code: WORKFLOW_DEFERRED } },
+        content: [{ type: 'text', text: message }] }
+    }
     if (!ctx.agentTeams.listMembers(agent).some(member => member.id !== agent.id && ['running', 'provisioning'].includes(member.status))) return await next()
     const definition = ctx.tools.get('wait_agent', agent)
     if (!definition || validateJsonSchemaValue(definition.output.schema, {timedOut:false,reason:'user-steer'}, 'value').length) {
@@ -82,7 +106,7 @@ export function install(ctx: Context, _config: Config = {}, observe?: (event: st
     const controller = new AbortController(), caller = exec.signal
     const reason = new HarnessError('This single wait ended because user Steer is pending; teammates keep running.', SIGNAL)
     const trigger = () => {
-      if (diagnostics.disabled || caller.aborted || controller.signal.aborted || !agent.inbox.nextStep.some(message => receipts.get(agent)?.has(message.id))) return
+      if (diagnostics.disabled || caller.aborted || controller.signal.aborted || !hasPendingSteer(agent)) return
       diagnostics.wakes++; controller.abort(reason); record('compat/wake')
     }
     let group = triggers.get(agent)

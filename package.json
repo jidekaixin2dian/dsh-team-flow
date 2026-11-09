@@ -1,6 +1,6 @@
 {
   "name": "dsh-team-flow-continuous",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "license": "MIT",
   "description": "Use Steer to end the Lead's current wait and add instructions while teammates keep working.",
   "type": "module",
