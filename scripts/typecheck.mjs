@@ -5,9 +5,6 @@ import { fileURLToPath } from 'node:url'
 import { selectHost } from './hosts.mjs'
 
 const project = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const hostApi = false
-const compat = false
-const continuous = false
 const upstream = selectHost().directory
 const require = createRequire(resolve(upstream, 'package.json'))
 const ts = require('typescript')
@@ -55,7 +52,6 @@ const converted = ts.convertCompilerOptionsFromJson({
   rewriteRelativeImportExtensions: false,
   typeRoots: [resolve(upstream, 'node_modules/@types')],
 }, upstream)
-const rootFiles = compat ? ['compat/rc2/src/index.ts'] : hostApi ? ['src/index.ts', 'experiments/host-api/wake.ts', 'tests/host-api/strict.spec.ts', 'tests/host-api/coverage.spec.ts', 'tests/host-api/lifecycle.spec.ts', 'tests/host-api/benchmark.spec.ts', 'tests/m2/harness.ts'] : ['experiments/m2/steer-wake.ts', 'tests/m2/harness.ts', 'tests/m2/native.spec.ts', 'tests/m2/ptc.spec.ts']
 const roots = ['src/index.ts'].map(file => resolve(project, file))
 if (!diagnostics.length) {
   const program = ts.createProgram(roots, converted.options, hostFor(converted.options))

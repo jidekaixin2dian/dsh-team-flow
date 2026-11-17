@@ -1,6 +1,16 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+import { selectHost } from '../scripts/hosts.mjs'
 import { requiredChecks, validateSource, validateChecks, validateAsset } from '../scripts/release-preflight.mjs'
+
+test('release preflight covers every host in the compatibility workflow', () => {
+  const workflow = readFileSync(new URL('../.github/workflows/compatibility.yml', import.meta.url), 'utf8')
+  const matrix = workflow.match(/^\s*host:\s*\[([^\]\n]+)\]\s*$/m)
+  assert.ok(matrix, 'Review the release gate when changing the host matrix format')
+  const expected = matrix[1].split(',').map(host => `test (${host.trim().replace(/^['"]|['"]$/g, '')})`)
+  assert.deepEqual([...requiredChecks].sort(), expected.sort())
+})
 
 test('release source must be the version tag on main', () => {
   const valid = { tag: 'v0.2.0-alpha.9', version: '0.2.0-alpha.9', head: 'abc', tagged: 'abc', onMain: true,
@@ -28,4 +38,10 @@ test('release archive selection rejects drafts, mismatched tags, and ambiguous a
     { assets: [{ name: 'dsh-team-flow-continuous-0.2.0-alpha.9.tgz' }, { name: 'extra.tgz' }] }]) {
     assert.throws(() => validateAsset({ ...release, ...change }, 'v0.2.0-alpha.9'))
   }
+})
+
+test('full host versions resolve the correct release line and retain old aliases', () => {
+  assert.equal(selectHost(['--host', '0.2.2-rc.1']).sha, selectHost(['--host', 'rc1']).sha)
+  assert.equal(selectHost(['--host', '0.2.1-rc.2']).sha, selectHost(['--host', 'rc2']).sha)
+  assert.notEqual(selectHost(['--host', '0.2.2-rc.1']).sha, selectHost(['--host', '0.2.1-rc.2']).sha)
 })

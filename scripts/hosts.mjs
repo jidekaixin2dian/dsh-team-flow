@@ -24,6 +24,8 @@ export function selectHost(argv = process.argv.slice(2)) {
       else directory = value
     } else forwarded.push(argv[i])
   }
+  // Full versions are unambiguous; keep legacy short keys for existing commands.
+  key = Object.entries(hosts).find(([, host]) => host.tag === `dsh-v${key}`)?.[0] ?? key
   if (!Object.hasOwn(hosts, key)) throw new Error(`Unknown host ${key}; choose ${Object.keys(hosts).join(', ')}`)
   return { key, ...hosts[key], directory: resolve(directory ?? `work/${key}`), forwarded }
 }

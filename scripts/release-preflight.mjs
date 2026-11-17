@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { pathToFileURL } from 'node:url'
 
-export const requiredChecks = ['test (alpha1)', 'test (alpha2)', 'test (rc2)', 'test (rc3)', 'test (rc4)']
+export const requiredChecks = ['test (alpha1)', 'test (alpha2)', 'test (rc2)', 'test (rc3)', 'test (rc4)', 'test (rc1)']
 
 export function validateSource({ tag, version, head, tagged, onMain, workflowRef, workflowSha }) {
   assert.match(tag, /^v\d+\.\d+\.\d+(?:-[\w.-]+)?$/, 'Expected an immutable version tag')
