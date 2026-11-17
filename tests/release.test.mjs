@@ -1,6 +1,15 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { requiredChecks, validateSource, validateChecks, validateAsset } from '../scripts/release-preflight.mjs'
+
+test('release preflight covers every host in the compatibility workflow', () => {
+  const workflow = readFileSync(new URL('../.github/workflows/compatibility.yml', import.meta.url), 'utf8')
+  const matrix = workflow.match(/^\s*host:\s*\[([^\]\n]+)\]\s*$/m)
+  assert.ok(matrix, 'Review the release gate when changing the host matrix format')
+  const expected = matrix[1].split(',').map(host => `test (${host.trim().replace(/^['"]|['"]$/g, '')})`)
+  assert.deepEqual([...requiredChecks].sort(), expected.sort())
+})
 
 test('release source must be the version tag on main', () => {
   const valid = { tag: 'v0.2.0-alpha.9', version: '0.2.0-alpha.9', head: 'abc', tagged: 'abc', onMain: true,
