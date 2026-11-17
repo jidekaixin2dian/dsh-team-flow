@@ -1,5 +1,7 @@
 # 开发与验证
 
+先读 [代码地图](architecture.md) 定位职责，再按本页准备与验证。
+
 
 
 Node >=24，Git，pnpm。宿主 checkout 与 DSH_HOME 均在本仓库 `work/` 内；不会读取正式 DSH 会话。首次准备下载官方源码与锁定依赖，所有模型调用使用 Mock，不需要 API Key。
@@ -14,7 +16,7 @@ npm run pack:local
 npm run test:market
 ```
 
-默认准备和验证 `0.2.1-rc.4`。已有相同固定 commit 的干净宿主 checkout 时，可给 typecheck 和 test 传 `-- --host-path <绝对路径>`，无需重复安装依赖。旧版矩阵统一传 `-- --host alpha1`、`-- --host alpha2` 、`-- --host rc2` 或 `-- --host rc3` 给 setup、typecheck 和 test；原 `--alpha1` 参数继续可用。Windows GitHub Actions 持续运行这五档公开源码；旧 `0.2.0-rc.2` 的安装文件副本不会被上传，保留本地脱敏证据。
+固定宿主、默认选择和完整 tag/SHA 见 `scripts/hosts.mjs`。setup、typecheck 和 test 可传 `-- --host 0.2.2-rc.1` 等完整版本，旧短参数保留；复用宿主时同时传对应 `--host` 与 `--host-path <绝对路径>`。持续验证范围见 Compatibility workflow。
 
 
 ---
@@ -35,7 +37,7 @@ npm run pack:local
 npm run test:market
 ```
 
-Setup, typecheck and test default to `0.2.1-rc.4`. Typecheck and test accept `-- --host-path <absolute-path>` to reuse a clean checkout at the pinned commit. Pass `-- --host alpha1` or `-- --host alpha2` (also `rc2` / `rc3`) for older public hosts; legacy `--alpha1` still works. All model traffic is Mock and all DSH data is confined to this checkout's `work/`. CI runs all five public-source versions. Installation-owned old `0.2.0-rc.2` files are not redistributed.
+Pinned hosts and the default are defined in `scripts/hosts.mjs`. Setup, typecheck and test accept full versions such as `-- --host 0.2.2-rc.1`; legacy aliases remain supported. To reuse a checkout, pass both its matching `--host` and `--host-path <absolute-path>`. The Compatibility workflow defines the continuous matrix.
 
 MIT. Community project, not affiliated with DeepSeek. Share versions, minimal reproduction and redacted logs in Issues; never include credentials or private conversations.
 

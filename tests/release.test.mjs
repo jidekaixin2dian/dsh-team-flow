@@ -1,6 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
+import { selectHost } from '../scripts/hosts.mjs'
 import { requiredChecks, validateSource, validateChecks, validateAsset } from '../scripts/release-preflight.mjs'
 
 test('release preflight covers every host in the compatibility workflow', () => {
@@ -37,4 +38,10 @@ test('release archive selection rejects drafts, mismatched tags, and ambiguous a
     { assets: [{ name: 'dsh-team-flow-continuous-0.2.0-alpha.9.tgz' }, { name: 'extra.tgz' }] }]) {
     assert.throws(() => validateAsset({ ...release, ...change }, 'v0.2.0-alpha.9'))
   }
+})
+
+test('full host versions resolve the correct release line and retain old aliases', () => {
+  assert.equal(selectHost(['--host', '0.2.2-rc.1']).sha, selectHost(['--host', 'rc1']).sha)
+  assert.equal(selectHost(['--host', '0.2.1-rc.2']).sha, selectHost(['--host', 'rc2']).sha)
+  assert.notEqual(selectHost(['--host', '0.2.2-rc.1']).sha, selectHost(['--host', '0.2.1-rc.2']).sha)
 })

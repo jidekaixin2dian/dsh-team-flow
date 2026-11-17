@@ -1,27 +1,64 @@
 /** Capability-based plugin compatibility layer. Does not alter installed files. */
-import z from '@deepseek-ai/schemastery'
 import { validateJsonSchemaValue } from '@deepseek-ai/dsh-tools'
 import type { Context } from '@deepseek-ai/cordis'
 import type { Agent } from '@deepseek-ai/dsh-agent'
 import type {} from '@deepseek-ai/dsh-experimental-agent-team'
 import { HarnessError } from '@deepseek-ai/dsh-llm'
-import { TOOL_ABORTED, type ToolDefinition, type ToolExecutionResult } from '@deepseek-ai/dsh-tools'
+import { TOOL_ABORTED, type ToolDefinition, type ToolExecution, type ToolExecutionResult } from '@deepseek-ai/dsh-tools'
 
 
-export const name = 'dsh-team-flow-rc2'
-export const inject: string[] = ['agents', 'agentTeams', 'tools', 'systemPrompt']
-export interface Config { freshProvider?: string; forkProvider?: string }
 export interface Diagnostics { active: number; wakes: number; decorated: number; disabled: boolean }
-export const Config: z<Config> = z.object({ freshProvider: z.string().default('spawn'), forkProvider: z.string().default('fork') })
-const SIGNAL = 'TEAM_FLOW_RC2_STEER'
-const DISABLED = 'TEAM_FLOW_RC2_DISABLED'
+const STEER_WAKE_CODE = 'TEAM_FLOW_RC2_STEER'
+const PLUGIN_DISABLED_CODE = 'TEAM_FLOW_RC2_DISABLED'
 const WORKFLOW_DEFERRED = 'TEAM_FLOW_WORKFLOW_DEFERRED'
-export function apply(ctx: Context, config: Config = {}): void { install(ctx, config) }
+function canDeferForegroundWorkflow(ctx: Context, exec: ToolExecution, agent: Agent, pendingSteer: boolean): boolean {
+  const args = exec.arguments
+  // A nested tool error can unwind run_code and abort its in-flight siblings.
+  if (exec.parent !== undefined || exec.signal.aborted || !args || typeof args !== 'object'
+      || ('run_in_background' in args && args.run_in_background !== false)
+      || !pendingSteer) return false
+  const tools = ctx.tools
+  // Older hosts cannot resolve the admitted tool for this execution.
+  if (!('executable' in tools) || typeof tools.executable !== 'function') return false
+  const workflow: ToolDefinition | undefined = tools.executable('workflow', agent, 'toolSet' in exec ? exec.toolSet : undefined)
+  if (!workflow?.output.schema.oneOf?.some(branch => branch.properties?.kind?.const === 'foreground'
+      && ['kind', 'runId', 'agentsStarted', 'result'].every(field => branch.required?.includes(field)))
+      || validateJsonSchemaValue(workflow.parameters, args, 'arguments').length) return false
+  return true
+}
 
-export function install(ctx: Context, _config: Config = {}, observe?: (event: string, fields?: object) => void): { diagnostics: Diagnostics } {
+function makeAbortResult(source: ToolExecutionResult): ToolExecutionResult {
+  return {
+    isError: true,
+    error: { message: 'tool call aborted', info: { name: 'AbortError', code: TOOL_ABORTED } },
+    content: [{ type: 'text', text: 'Error: tool call aborted' }],
+    ...(source.additionalContexts ? { additionalContexts: source.additionalContexts } : {}),
+  }
+}
+
+function makeDisabledResult(source: ToolExecutionResult): ToolExecutionResult {
+  const message = 'Team Flow plugin disabled during this wait; teammates keep running.'
+  return {
+    isError: true,
+    error: { message, info: { name: 'PluginDisabledError', code: PLUGIN_DISABLED_CODE } },
+    content: [{ type: 'text', text: message }],
+    ...(source.additionalContexts ? { additionalContexts: source.additionalContexts } : {}),
+  }
+}
+
+function makeSteerWakeResult(source: ToolExecutionResult): ToolExecutionResult {
+  return {
+    isError: false,
+    value: { timedOut: false, reason: 'user-steer' },
+    content: [],
+    ...(source.additionalContexts ? { additionalContexts: source.additionalContexts } : {}),
+  }
+}
+
+export function installSteerWake(ctx: Context, observe?: (event: string, fields?: object) => void): { diagnostics: Diagnostics } {
   const diagnostics = { active: 0, wakes: 0, decorated: 0, disabled: false }
   const receipts = new WeakMap<Agent, Set<string>>()
-  const entries = new Map<Agent, { restore: () => void; tools: (() => void) | undefined }>()
+  const entries = new Map<Agent, { restore: () => void }>()
   const controllers = new Set<AbortController>()
   const flights = new Set<Promise<unknown>>()
   const record = (event: string, fields: object = {}) => observe?.(event, fields)
@@ -58,14 +95,15 @@ export function install(ctx: Context, _config: Config = {}, observe?: (event: st
       }
       receipts.delete(agent)
       diagnostics.decorated--
-    }, tools: undefined as (() => void) | undefined }
+    } }
     entries.set(agent, entry)
     diagnostics.decorated++
   }
   ctx.on('agent/created', ({ agent }) => { attach(agent) })
   ctx.on('agent/disposed', ({ agent }) => {
     const entry = entries.get(agent)
-    entry?.tools?.(); entry?.restore(); entries.delete(agent)
+    entry?.restore()
+    entries.delete(agent)
   })
   ctx.on('agent/inbox/claimed', ({ agent, message }) => receipts.get(agent)?.delete(message.id))
   ctx.on('agent/inbox/discarded', ({ agent, message }) => receipts.get(agent)?.delete(message.id))
@@ -80,18 +118,7 @@ export function install(ctx: Context, _config: Config = {}, observe?: (event: st
     if (diagnostics.disabled || (exec.name !== 'wait_agent' && exec.name !== 'workflow') || !agent
         || ctx.agentTeams.tryMembership(agent)?.role !== 'lead') return await next()
     if (exec.name === 'workflow') {
-      const args = exec.arguments
-      // A nested tool error can unwind run_code and abort its in-flight siblings.
-      if (exec.parent !== undefined || exec.signal.aborted || !args || typeof args !== 'object'
-          || ('run_in_background' in args && args.run_in_background !== false)
-          || !hasPendingSteer(agent)) return await next()
-      const tools = ctx.tools
-      // Older hosts cannot resolve the admitted tool for this execution.
-      if (!('executable' in tools) || typeof tools.executable !== 'function') return await next()
-      const workflow: ToolDefinition | undefined = tools.executable('workflow', agent, 'toolSet' in exec ? exec.toolSet : undefined)
-      if (!workflow?.output.schema.oneOf?.some(branch => branch.properties?.kind?.const === 'foreground'
-          && ['kind', 'runId', 'agentsStarted', 'result'].every(field => branch.required?.includes(field)))
-          || validateJsonSchemaValue(workflow.parameters, args, 'arguments').length) return await next()
+      if (!canDeferForegroundWorkflow(ctx, exec, agent, hasPendingSteer(agent))) return await next()
       const message = 'Foreground workflow was deferred before starting. Process the pending user Steer before deciding whether to run it.'
       record('compat/workflow-deferred')
       return { isError: true, error: { message, info: { name: 'WorkflowDeferredError', code: WORKFLOW_DEFERRED } },
@@ -104,7 +131,7 @@ export function install(ctx: Context, _config: Config = {}, observe?: (event: st
       return await next()
     }
     const controller = new AbortController(), caller = exec.signal
-    const reason = new HarnessError('This single wait ended because user Steer is pending; teammates keep running.', SIGNAL)
+    const reason = new HarnessError('This single wait ended because user Steer is pending; teammates keep running.', STEER_WAKE_CODE)
     const trigger = () => {
       if (diagnostics.disabled || caller.aborted || controller.signal.aborted || !hasPendingSteer(agent)) return
       diagnostics.wakes++; controller.abort(reason); record('compat/wake')
@@ -117,11 +144,11 @@ export function install(ctx: Context, _config: Config = {}, observe?: (event: st
       try {
         const body = next(); trigger()
         const result = await body
-        if (caller.aborted) return { isError: true as const, error: { message: 'tool call aborted', info: { name: 'AbortError', code: TOOL_ABORTED } }, content: [{ type: 'text' as const, text: 'Error: tool call aborted' }], ...(result.additionalContexts ? { additionalContexts: result.additionalContexts } : {}) }
-        // Unload owns cancellation of this wait only; report an honest failure, never Steer success.
-        if (diagnostics.disabled && controller.signal.aborted) return { isError: true as const, error: { message: 'Team Flow plugin disabled during this wait; teammates keep running.', info: { name: 'PluginDisabledError', code: DISABLED } }, content: [{ type: 'text' as const, text: 'Team Flow plugin disabled during this wait; teammates keep running.' }], ...(result.additionalContexts ? { additionalContexts: result.additionalContexts } : {}) }
-        if (!result.isError || controller.signal.reason !== reason || result.error.info?.code !== SIGNAL) return result
-        return { isError: false as const, value: { timedOut: false, reason: 'user-steer' }, content: [], ...(result.additionalContexts ? { additionalContexts: result.additionalContexts } : {}) }
+        if (caller.aborted) return makeAbortResult(result)
+        // Plugin disposal ends this wait, without acknowledging a Steer.
+        if (diagnostics.disabled && controller.signal.aborted) return makeDisabledResult(result)
+        if (!result.isError || controller.signal.reason !== reason || result.error.info?.code !== STEER_WAKE_CODE) return result
+        return makeSteerWakeResult(result)
       } finally {
         group.delete(trigger); if (!group.size) triggers.delete(agent)
         controllers.delete(controller); exec.signal = caller; diagnostics.active--
@@ -133,12 +160,11 @@ export function install(ctx: Context, _config: Config = {}, observe?: (event: st
   })
   ctx.effect(() => async () => {
     diagnostics.disabled = true
-    for (const controller of controllers) controller.abort(new HarnessError('Team Flow plugin disabled', DISABLED))
+    for (const controller of controllers) controller.abort(new HarnessError('Team Flow plugin disabled', PLUGIN_DISABLED_CODE))
     triggers.clear()
     for (const entry of entries.values()) entry.restore()
     // Await the bodies, without abandoning a promise or cancelling an Agent/teammate.
     await Promise.allSettled(flights)
-    for (const entry of entries.values()) entry.tools?.()
     entries.clear()
   })
   for (const agent of ctx.agents.list()) attach(agent)
