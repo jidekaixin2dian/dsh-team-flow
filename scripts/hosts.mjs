@@ -9,6 +9,9 @@ export const hosts = {
   // 0.2.2-rc.1 restructures tool execution per Agent scope — the surface this
   // plugin decorates — so it is verified explicitly before becoming default.
   rc1: { tag: 'dsh-v0.2.2-rc.1', sha: '66491b05e3f05ad35bcdd4f6cd7ed26041d9e3db' },
+  // 0.2.2-rc.5 graduates Agent Teams out of experimental and moves wait_agent
+  // into tool-subagent-control with native Steer wakeup.
+  rc5: { tag: 'dsh-v0.2.2-rc.5', sha: '9c2670d3bce5275e0d1610272958121af87787bb' },
 }
 
 /** Shared version selection keeps setup, semantic checks and runtime tests aligned. */

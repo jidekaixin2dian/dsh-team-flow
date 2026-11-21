@@ -1,6 +1,6 @@
 # Verification and evidence boundaries
 
-Updated 2026-11-06, UTC+8. This page is the current support matrix and the index of historical evidence. The source pins are shared by setup, strict type checking, runtime tests and CI through [`scripts/hosts.mjs`](../scripts/hosts.mjs). Package peer ranges are compatibility targets, not evidence that every host version has been tested.
+Updated 2026-11-21, UTC+8. This page is the current support matrix and the index of historical evidence. The source pins are shared by setup, strict type checking, runtime tests and CI through [`scripts/hosts.mjs`](../scripts/hosts.mjs). Package peer ranges are compatibility targets, not evidence that every host version has been tested.
 
 ## Current public-source matrix
 
@@ -12,9 +12,10 @@ Updated 2026-11-06, UTC+8. This page is the current support matrix and the index
 | 0.2.1-rc.3 | `1f81c047fc48fa190a683e469daa699857e9afe8` | 18 passed | [Runtime](../verification/local/dsh-0.2.1-rc.3/rc3/run.log), [strict TypeScript](../verification/local/dsh-0.2.1-rc.3/typecheck.txt) |
 
 | 0.2.1-rc.4 (default) | `504a01a9578abc2c6f1fb896b1dc322c9fe24f66` | 18 passed | [Runtime](../verification/local/dsh-0.2.1-rc.4/run.log), [strict TypeScript](../verification/local/dsh-0.2.1-rc.4/typecheck.txt) |
-| 0.2.2-rc.1 | `66491b05e3f05ad35bcdd4f6cd7ed26041d9e3db` | 18 passed | [Runtime](../verification/local/dsh-0.2.2-rc.1/run.log), [strict TypeScript](../verification/local/dsh-0.2.2-rc.1/typecheck.txt) |
+| 0.2.2-rc.1 | `66491b05e3f05ad35bcdd4f6cd7ed26041d9e3db` | 19 passed | [Runtime](../verification/local/dsh-0.2.2-rc.1/run.log), [strict TypeScript](../verification/local/dsh-0.2.2-rc.1/typecheck.txt) |
+| 0.2.2-rc.5 | `9c2670d3bce5275e0d1610272958121af87787bb` | Graduated Team + workflow deferral + native Steer wake | Compatibility workflow (`rc5`) |
 
-The [Compatibility workflow](../.github/workflows/compatibility.yml) reruns all six source pins. The [verified main run](https://github.com/jidekaixin2dian/dsh-team-flow/actions/runs/39408500060) passed each matrix job on 2026-10-20; 0.2.1-rc.3 was added on 2026-10-24 and 0.2.2-rc.1 on 2026-11-06. 0.2.2 reshaped `tools.execute` into raw call batches and split per-Agent-scope executors; the test driver probes `tools.executable` and speaks both generations, while the plugin's production code never calls `tools.execute` directly. For subsequent commits, inspect the corresponding run rather than treating any dated result as permanent certification. Runtime tests use Mock inference and real local Node PTC; they do not exercise the complete Desktop input chain. See [the rc.2 report](compatibility-0.2.1-rc.2.md) and [the rc.3 report](compatibility-0.2.1-rc.3.md) for the contract changes and evidence boundaries.
+The [Compatibility workflow](../.github/workflows/compatibility.yml) reruns all seven source pins. The [verified main run](https://github.com/jidekaixin2dian/dsh-team-flow/actions/runs/39408500060) passed each matrix job on 2026-10-20; 0.2.1-rc.3 was added on 2026-10-24, 0.2.2-rc.1 on 2026-11-06, and 0.2.2-rc.5 on 2026-11-21. 0.2.2 reshaped `tools.execute` into raw call batches and split per-Agent-scope executors; 0.2.2-rc.5 graduated Agent Teams to `@deepseek-ai/dsh-tool-agent-team` / `@deepseek-ai/dsh-agent-team` and moved `wait_agent` into `@deepseek-ai/dsh-tool-subagent-control` with native Steer wakeup, while Team Flow dynamically resolves the host Team package, preserves upgraded profile compatibility, and keeps foreground `workflow` deferral active. For subsequent commits, inspect the corresponding run rather than treating any dated result as permanent certification. Runtime tests use Mock inference and real local Node PTC; they do not exercise the complete Desktop input chain. See [the rc.2 report](compatibility-0.2.1-rc.2.md) and [the rc.3 report](compatibility-0.2.1-rc.3.md) for the contract changes and evidence boundaries.
 
 ## Historical installation and first-public-matrix evidence
 

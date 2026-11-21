@@ -2,7 +2,7 @@
 
 **Steer the Lead while it waits. Let teammates keep working.**
 
-[中文](README.md) · [npm · 0.2.0](https://www.npmjs.com/package/dsh-team-flow-continuous/v/0.2.0) · [Marketplace](https://awesome-dsh-plugin.com/p/jidekaixin2dian/dsh-team-flow/) · [Downloads](https://github.com/jidekaixin2dian/dsh-team-flow/releases) · [Changelog](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/CHANGELOG.md)
+[中文](README.md) · [npm · 0.2.2](https://www.npmjs.com/package/dsh-team-flow-continuous/v/0.2.2) · [Marketplace](https://awesome-dsh-plugin.com/p/jidekaixin2dian/dsh-team-flow/) · [Downloads](https://github.com/jidekaixin2dian/dsh-team-flow/releases) · [Changelog](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/CHANGELOG.md)
 
 Team Flow is an Agent Teams steering plugin for DeepSeek Harness (DSH). A same-session user can **Steer** the Lead while it is waiting in `wait_agent`, ending that one wait so the native AgentLoop can consume the original message. Teammates continue working and Queue retains its semantics.
 
@@ -21,7 +21,7 @@ When the Lead is waiting for parallel tasks, send a Steer to add a requirement o
 
 ## Install and update
 
-Requires **DSH >=0.2.0-rc.2 and Node >=24**, with official **Agent Teams** enabled first. CI covers DSH 0.2.1-alpha.1 / alpha.2 / rc.2 / rc.3 / rc.4 / 0.2.2-rc.1. See the [verification matrix](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/docs/verification.md).
+Requires **DSH >=0.2.0-rc.2 and Node >=24**, with official **Agent Teams** enabled first. CI covers DSH 0.2.1-alpha.1 / alpha.2 / rc.2 / rc.3 / rc.4 / 0.2.2-rc.1 / 0.2.2-rc.5. See the [verification matrix](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/docs/verification.md).
 
 Search for **dsh-team-flow**, source **jidekaixin2dian/dsh-team-flow**, in the marketplace. npm and GitHub installs include prebuilt files and need no install-script approval. The catalog prefers npm once mapped; source installs also support version checks. The default npm channel serves stable releases.
 
@@ -55,7 +55,7 @@ The marketplace checks versions and installs after your click; it does not silen
 
 ## Compatibility boundaries
 
-- On DSH 0.2.2-rc.1, if a user Steer is already queued, Team Flow defers a foreground `workflow` called directly by the Lead. The Lead can reconsider the call after reading the message in its next step.
+- On DSH 0.2.2-rc.1 and 0.2.2-rc.5, if a user Steer is already queued, Team Flow defers a foreground `workflow` called directly by the Lead. The Lead can reconsider the call after reading the message in its next step. On DSH 0.2.2-rc.5, `wait_agent` moved to `tool-subagent-control` with native Steer wakeup; Team Flow resolves the graduated `tool-agent-team` package and keeps foreground `workflow` deferral active.
 - Steer can end a `wait_agent` call early. During a foreground `workflow` that already started, a `workflow` inside `run_code`, or another long-running tool, the Lead picks up Steer at the next step boundary. If the host exposes `run_in_background`, pass `run_in_background: true` to `workflow` for long tasks so the Lead can continue processing Steer messages.
 - Reversible runtime decorators reuse the host's own Team tools without patching host source or installation files.
 - The plugin does not cancel Agents, consume Inbox messages or resend input. Its successful wake result is `{timedOut:false, reason:'user-steer'}`, not a fabricated timeout.
