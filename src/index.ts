@@ -13,9 +13,13 @@ type TeamToolsPlugin = {
 async function loadTeamTools(): Promise<TeamToolsPlugin> {
   for (const id of ['@deepseek-ai/dsh-tool-agent-team', '@deepseek-ai/dsh-experimental-tool-agent-team']) {
     try {
-      return await import(id) as TeamToolsPlugin
+      const mod = await import(id) as Partial<TeamToolsPlugin>
+      if (mod && typeof mod.apply === 'function') return mod as TeamToolsPlugin
     } catch (error) {
-      if ((error as { code?: string })?.code !== 'ERR_MODULE_NOT_FOUND') throw error
+      const code = (error as { code?: string })?.code
+      const message = error instanceof Error ? error.message : String(error)
+      if (code === 'ERR_MODULE_NOT_FOUND' || code === 'MODULE_NOT_FOUND' || message.includes('Could not resolve')) continue
+      throw error
     }
   }
   throw new Error('Team Flow requires @deepseek-ai/dsh-tool-agent-team or @deepseek-ai/dsh-experimental-tool-agent-team')
