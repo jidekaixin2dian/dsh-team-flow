@@ -2,7 +2,7 @@
 
 **主代理等队友时，你仍然可以插话。队友继续工作。**
 
-[English](README.en.md) · [npm · 0.2.0](https://www.npmjs.com/package/dsh-team-flow-continuous/v/0.2.0) · [插件市场](https://awesome-dsh-plugin.com/p/jidekaixin2dian/dsh-team-flow/) · [下载](https://github.com/jidekaixin2dian/dsh-team-flow/releases) · [更新记录](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/CHANGELOG.md)
+[English](README.en.md) · [npm · 0.2.2](https://www.npmjs.com/package/dsh-team-flow-continuous/v/0.2.2) · [插件市场](https://awesome-dsh-plugin.com/p/jidekaixin2dian/dsh-team-flow/) · [下载](https://github.com/jidekaixin2dian/dsh-team-flow/releases) · [更新记录](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/CHANGELOG.md)
 
 Team Flow 是 DeepSeek Harness（DSH）的 Agent Teams 插话插件。主代理等待队友、停在 `wait_agent` 时，同会话的用户可以用 **Steer / 插话** 结束当前这一次等待，让原生 AgentLoop 继续领取原消息；队友不会被停止，Queue 仍按原语义排队。
 
@@ -21,7 +21,7 @@ Team Flow 是 DeepSeek Harness（DSH）的 Agent Teams 插话插件。主代理�
 
 ## 安装与更新
 
-需要 **DSH >=0.2.0-rc.2、Node >=24**，并先启用官方 **Agent Teams**。当前持续验证 DSH 0.2.1-alpha.1 / alpha.2 / rc.2 / rc.3 / rc.4 / 0.2.2-rc.1；详细范围见[验证记录](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/docs/verification.md)。
+需要 **DSH >=0.2.0-rc.2、Node >=24**，并先启用官方 **Agent Teams**。当前持续验证 DSH 0.2.1-alpha.1 / alpha.2 / rc.2 / rc.3 / rc.4 / 0.2.2-rc.1 / 0.2.2-rc.5；详细范围见[验证记录](https://github.com/jidekaixin2dian/dsh-team-flow/blob/main/docs/verification.md)。
 
 在市场搜索 **dsh-team-flow**，确认来源 **jidekaixin2dian/dsh-team-flow**。npm 包与 GitHub 源都包含预构建文件，无需批准安装脚本。市场识别 npm 包后会优先使用 npm；已有源安装也可检查版本更新。npm 默认通道为正式版本。
 
@@ -55,7 +55,7 @@ dsh plugin --profile <test-profile> remove dsh-team-flow-continuous
 
 ## 兼容边界
 
-- 在 DSH 0.2.2-rc.1 中，已有用户插话排队时，主代理直接发起的前台 `workflow` 会暂缓启动。主代理在下一步处理插话后，可以重新决定是否运行。
+- 在 DSH 0.2.2-rc.1 与 0.2.2-rc.5 中，已有用户插话排队时，主代理直接发起的前台 `workflow` 会暂缓启动。主代理在下一步处理插话后，可以重新决定是否运行。在 0.2.2-rc.5 中，`wait_agent` 已随 `tool-subagent-control` 原生支持用户插话唤醒，插件动态加载正式版 `tool-agent-team` 并继续提供 `workflow` 暂缓保护。
 - Steer 可以提前结束 `wait_agent`。已经启动的前台 `workflow`、`run_code` 内的 `workflow` 和其他长工具期间，插话在当前 step 结束后领取。宿主提供 `run_in_background` 时，可以用 `workflow` 的 `run_in_background: true` 在后台执行长任务，让主代理继续处理插话。
 - 使用可恢复的运行时方法装饰，复用宿主 Team 工具；没有修改宿主源码或安装文件。
 - 不取消 Agent、不消费或重发 Inbox 消息。成功值为 `{timedOut:false, reason:'user-steer'}`，不是伪造 timeout。

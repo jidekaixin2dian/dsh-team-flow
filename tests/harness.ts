@@ -10,13 +10,30 @@ import { SessionId } from '@deepseek-ai/dsh-session'
 import * as JsonlPersistence from '@deepseek-ai/dsh-session-persistence-jsonl'
 import SubagentService from '@deepseek-ai/dsh-subagent'
 import * as SubagentSpawn from '@deepseek-ai/dsh-subagent-spawn-in-process'
-import TeamService from '@deepseek-ai/dsh-experimental-agent-team'
-import * as toolTeam from '@deepseek-ai/dsh-experimental-tool-agent-team'
 import type { ToolExecutionResult } from '@deepseek-ai/dsh-tools'
 import { expect, onTestFinished } from 'vitest'
 import { MockAdapter, textResponse, toolCallResponse } from 'm1-upstream/packages/core/agent-loop/tests/mock-adapter.ts'
 import { mountWorkingDirectoryFixture } from 'm1-upstream/packages/subagent/subagent/tests/working-directory-fixture.ts'
-import { TestSessionQuery } from 'm1-upstream/packages/experimental/agent-team/tests/test-session-query.ts'
+
+const graduated = process.env.TEAM_FLOW_HOST === 'rc5'
+
+async function loadTeamHost() {
+  if (graduated) {
+    const [{ default: TeamService }, toolTeam, subagentControl, { TestSessionQuery }] = await Promise.all([
+      import('@deepseek-ai/dsh-agent-team'),
+      import('@deepseek-ai/dsh-tool-agent-team'),
+      import('@deepseek-ai/dsh-tool-subagent-control'),
+      import('m1-upstream/packages/team/agent-team/tests/test-session-query.ts'),
+    ])
+    return { TeamService, toolTeam, subagentControl, TestSessionQuery }
+  }
+  const [{ default: TeamService }, toolTeam, { TestSessionQuery }] = await Promise.all([
+    import('@deepseek-ai/dsh-experimental-agent-team'),
+    import('@deepseek-ai/dsh-experimental-tool-agent-team'),
+    import('m1-upstream/packages/experimental/agent-team/tests/test-session-query.ts'),
+  ])
+  return { TeamService, toolTeam, subagentControl: undefined, TestSessionQuery }
+}
 
 declare module '@deepseek-ai/dsh-llm' {
   interface MessageSourceMap { 'm2-fixture': { kind: 'm2-fixture' } }
@@ -35,11 +52,13 @@ export async function setup(scenario: string, options: { ptc?: string; spike?: b
   await mountWorkingDirectoryFixture(ctx)
   // rc.2 exposes the lifecycle-owning apply plugin; older hosts export the service default.
   await ctx.plugin(JsonlPersistence.default ?? JsonlPersistence, { root })
+  const { TeamService, toolTeam, subagentControl, TestSessionQuery } = await loadTeamHost()
   await ctx.plugin(TestSessionQuery)
   await ctx.plugin(AgentLoop, { agents: [] })
   await ctx.plugin(SubagentService)
   await ctx.plugin(SubagentSpawn, { providerName: 'spawn' })
   await ctx.plugin(TeamService)
+  if (subagentControl) await ctx.plugin(subagentControl)
   if (options.toolTeam !== false) await ctx.plugin(toolTeam)
   await options.prepare?.(ctx, root)
   const adapter = new MockAdapter([
@@ -49,6 +68,7 @@ export async function setup(scenario: string, options: { ptc?: string; spike?: b
   ])
   ctx.llm.registerAdapter(['mock'], adapter)
   const lead = await ctx.agentLoop.create(SessionId('lead'), { provider: 'mock', model: 'mock' }, { cwd: root })
+  if (graduated) await (ctx as unknown as { agentTeams: { setEnabled: (agent: Agent, enabled: boolean) => Promise<void> } }).agentTeams.setEnabled(lead, true)
   const otherAdapter = new MockAdapter([textResponse('other independent response')])
   ctx.llm.registerAdapter(['other-mock'], otherAdapter)
   const other = await ctx.agentLoop.create(SessionId('other'), { provider: 'other-mock', model: 'mock' }, { cwd: root })
@@ -87,8 +107,17 @@ export async function setup(scenario: string, options: { ptc?: string; spike?: b
   })
   let child: Agent | undefined
   if (options.child !== false) {
-    const spawned = await ctx.agentTeams.spawnTeammate(lead, { name: 'worker', description: 'M2 Mock worker', prompt: [{ type: 'text', text: 'keep working' }], context: 'fresh', provider: 'spawn', signal: new AbortController().signal })
-    child = ctx.agents.get(spawned.member.id)
+    if (graduated) {
+      const spawned = await (ctx.subagents as unknown as {
+        startActivation: (req: { provider: string; label: string; prompt: Array<{ type: 'text'; text: string }>; parent: Agent; signal: AbortSignal; delivery: string }) => Promise<{ childId: SessionId }>
+      }).startActivation({ provider: 'spawn', label: 'worker', prompt: [{ type: 'text', text: 'keep working' }], parent: lead, signal: new AbortController().signal, delivery: 'parent' })
+      child = ctx.agents.get(spawned.childId)
+    } else {
+      const spawned = await (ctx as unknown as {
+        agentTeams: { spawnTeammate: (lead: Agent, req: object) => Promise<{ member: { id: SessionId } }> }
+      }).agentTeams.spawnTeammate(lead, { name: 'worker', description: 'M2 Mock worker', prompt: [{ type: 'text', text: 'keep working' }], context: 'fresh', provider: 'spawn', signal: new AbortController().signal })
+      child = ctx.agents.get(spawned.member.id)
+    }
     await expect.poll(() => adapter.requests.length).toBe(1)
     expect(child?.status).toBe('running')
   }
@@ -97,11 +126,18 @@ export async function setup(scenario: string, options: { ptc?: string; spike?: b
   const execute = async (name: string, args: object, signal = new AbortController().signal, agent: Agent = lead) => {
     const tools = ctx.tools as any
     if (typeof tools.executable === 'function') {
-      const batch = await tools.execute({
-        agent, signal,
-        calls: [{ id: ToolCallId(`direct-${++call}`), name, arguments: JSON.stringify(args) }],
-      })
-      return batch.results[0].result
+      const toolSet = graduated && typeof tools.resolve === 'function'
+        ? await tools.resolve({ agent, modelSelection: { provider: 'mock', model: 'mock' }, signal })
+        : undefined
+      try {
+        const batch = await tools.execute({
+          agent, signal, ...(toolSet ? { toolSet } : {}),
+          calls: [{ id: ToolCallId(`direct-${++call}`), name, arguments: JSON.stringify(args) }],
+        })
+        return batch.results[0].result
+      } finally {
+        toolSet?.dispose?.()
+      }
     }
     return tools.execute({ callId: ToolCallId(`direct-${++call}`), name, arguments: args, signal, agent })
   }

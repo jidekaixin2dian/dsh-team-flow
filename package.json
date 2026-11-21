@@ -1,6 +1,6 @@
 {
   "name": "dsh-team-flow-continuous",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "license": "MIT",
   "description": "Use Steer to end the Lead's current wait and add instructions while teammates keep working.",
   "type": "module",
@@ -34,7 +34,8 @@
       "patch": "./cordis.patch.yml",
       "order": {
         "after": [
-          "@deepseek-ai/dsh-experimental-agent-team-profile"
+          "@deepseek-ai/dsh-experimental-agent-team-profile",
+          "@deepseek-ai/dsh-base"
         ]
       }
     }
@@ -45,6 +46,8 @@
     "@deepseek-ai/dsh-agent": "*",
     "@deepseek-ai/dsh-llm": "*",
     "@deepseek-ai/dsh-tools": "*",
+    "@deepseek-ai/dsh-agent-team": "*",
+    "@deepseek-ai/dsh-tool-agent-team": "*",
     "@deepseek-ai/dsh-experimental-agent-team": "*",
     "@deepseek-ai/dsh-experimental-tool-agent-team": "*"
   },
@@ -62,6 +65,12 @@
       "optional": true
     },
     "@deepseek-ai/dsh-tools": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-agent-team": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-tool-agent-team": {
       "optional": true
     },
     "@deepseek-ai/dsh-experimental-agent-team": {

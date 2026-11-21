@@ -2,9 +2,29 @@
 import { validateJsonSchemaValue } from '@deepseek-ai/dsh-tools'
 import type { Context } from '@deepseek-ai/cordis'
 import type { Agent } from '@deepseek-ai/dsh-agent'
-import type {} from '@deepseek-ai/dsh-experimental-agent-team'
 import { HarnessError } from '@deepseek-ai/dsh-llm'
 import { TOOL_ABORTED, type ToolDefinition, type ToolExecution, type ToolExecutionResult } from '@deepseek-ai/dsh-tools'
+
+interface AgentTeamsLike {
+  tryMembership?: (agent: Agent) => { role?: string } | undefined
+  listMembers?: (agent: Agent) => ReadonlyArray<{ id: string; status: string }>
+}
+
+interface SubagentsLike {
+  rootOf?: (agent: Agent) => Agent
+}
+
+function isLeadAgent(ctx: Context, agent: Agent): boolean {
+  const teams = (ctx as unknown as { agentTeams?: AgentTeamsLike }).agentTeams
+  if (typeof teams?.tryMembership === 'function') return teams.tryMembership(agent)?.role === 'lead'
+  try {
+    const subagents = (ctx as unknown as { get?: (name: string) => SubagentsLike | undefined; subagents?: SubagentsLike }).get?.('subagents')
+      ?? (ctx as unknown as { subagents?: SubagentsLike }).subagents
+    return typeof subagents?.rootOf === 'function' ? subagents.rootOf(agent) === agent : false
+  } catch {
+    return false
+  }
+}
 
 
 export interface Diagnostics { active: number; wakes: number; decorated: number; disabled: boolean }
@@ -116,7 +136,7 @@ export function installSteerWake(ctx: Context, observe?: (event: string, fields?
   ctx.on('tools/execute', async (exec, next): Promise<ToolExecutionResult> => {
     const agent = exec.agent
     if (diagnostics.disabled || (exec.name !== 'wait_agent' && exec.name !== 'workflow') || !agent
-        || ctx.agentTeams.tryMembership(agent)?.role !== 'lead') return await next()
+        || !isLeadAgent(ctx, agent)) return await next()
     if (exec.name === 'workflow') {
       if (!canDeferForegroundWorkflow(ctx, exec, agent, hasPendingSteer(agent))) return await next()
       const message = 'Foreground workflow was deferred before starting. Process the pending user Steer before deciding whether to run it.'
@@ -124,7 +144,9 @@ export function installSteerWake(ctx: Context, observe?: (event: string, fields?
       return { isError: true, error: { message, info: { name: 'WorkflowDeferredError', code: WORKFLOW_DEFERRED } },
         content: [{ type: 'text', text: message }] }
     }
-    if (!ctx.agentTeams.listMembers(agent).some(member => member.id !== agent.id && ['running', 'provisioning'].includes(member.status))) return await next()
+    const teams = (ctx as unknown as { agentTeams?: AgentTeamsLike }).agentTeams
+    if (typeof teams?.tryMembership !== 'function' || typeof teams?.listMembers !== 'function') return await next()
+    if (!teams.listMembers(agent).some(member => member.id !== agent.id && ['running', 'provisioning'].includes(member.status))) return await next()
     const definition = ctx.tools.get('wait_agent', agent)
     if (!definition || validateJsonSchemaValue(definition.output.schema, {timedOut:false,reason:'user-steer'}, 'value').length) {
       ctx.logger.warn('DSH Team Flow: unsupported wait result contract; preserving native wait')

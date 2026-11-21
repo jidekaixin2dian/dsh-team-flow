@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.2.2 — 2026-11-21
+
+### 中文
+
+- 支持 **DSH 0.2.2-rc.5**（`9c2670d3`），并将 `rc5` 纳入兼容矩阵与 CI 检查。
+- 修复在 DSH 0.2.2-rc.3+ / 0.2.2-rc.5 上加载失败与旧配置报错的问题：宿主已将 Agent Teams 迁出实验目录并重命名为 `@deepseek-ai/dsh-tool-agent-team` / `@deepseek-ai/dsh-agent-team`，插件现按宿主版本动态加载对应 Team 工具包，并过滤从旧版本升级时残留的 `interrupt` / `freshProvider` / `forkProvider` 配置键。
+- 适配 DSH 0.2.2-rc.5 的原生 `wait_agent`（已迁入 `tool-subagent-control` 并原生支持用户插话唤醒），同时在新宿主上继续保留「待处理用户 Steer 期间暂缓直接前台 `workflow`」能力。
+
+### English
+
+- Support **DSH 0.2.2-rc.5** (`9c2670d3`) and add `rc5` to the compatibility matrix and CI checks.
+- Fix startup and upgraded-profile failures on DSH 0.2.2-rc.3+ / 0.2.2-rc.5: Agent Teams graduated from experimental packages to `@deepseek-ai/dsh-tool-agent-team` / `@deepseek-ai/dsh-agent-team`, so the plugin now resolves the matching Team tool package at runtime and strips legacy `interrupt` / `freshProvider` / `forkProvider` keys carried over from older profiles.
+- Respect native `wait_agent` Steer wakeup in `tool-subagent-control` on DSH 0.2.2-rc.5 while continuing to defer direct foreground `workflow` calls when a user Steer is pending.
+
 ## 0.2.1 — 2026-11-10
 
 - Lead 有待处理的用户 Steer 时，延后尚未启动的前台 `workflow`，让宿主先处理插话。已运行的工作流和后台工作流继续执行。

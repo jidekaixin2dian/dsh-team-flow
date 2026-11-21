@@ -1,8 +1,9 @@
 import { expect, it } from 'vitest'
-import * as officialTeamTools from '@deepseek-ai/dsh-experimental-tool-agent-team'
 import { installWaitResultAdapter } from '../src/register.ts'
 import { setup } from './harness.ts'
-it('public registration decoration reaches agent scopes and preserves the original definition', async () => {
+
+it.skipIf(process.env.TEAM_FLOW_HOST === 'rc5')('public registration decoration reaches agent scopes and preserves the original definition', async () => {
+  const officialTeamTools = await import('@deepseek-ai/dsh-experimental-tool-agent-team')
   let restore!: () => void, originalDescriptor
   const h = await setup('register-probe', { spike: false, toolTeam: false, prepare: async ctx => {
     originalDescriptor = Object.getOwnPropertyDescriptor(ctx.tools, 'register')

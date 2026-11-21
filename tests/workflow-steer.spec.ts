@@ -5,7 +5,7 @@ import { toolCallResponse } from 'm1-upstream/packages/core/agent-loop/tests/moc
 import * as compat from '../lib/index.js'
 import { input, setup } from './harness.ts'
 
-it.runIf(process.env.TEAM_FLOW_HOST === 'rc1')('defers the next foreground workflow without stopping active work', async () => {
+it.runIf(['rc1', 'rc5'].includes(process.env.TEAM_FLOW_HOST ?? ''))('defers the next foreground workflow without stopping active work', async () => {
   const [{ WorkflowEngine, WorkflowRunId }, WorkflowTool, { default: LocalJobs }, ToolJobs] = await Promise.all([
     import('@deepseek-ai/dsh-workflow'),
     import('@deepseek-ai/dsh-tool-workflow'),

@@ -15,7 +15,10 @@ run('git', ['diff', '--exit-code'], directory)
 run('git', ['diff', '--cached', '--exit-code'], directory)
 const manager = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm'
 // Windows .cmd requires cmd.exe; static arguments only, no interpolated shell text.
-const args = ['install', '--frozen-lockfile', '--ignore-scripts', '--filter', '@deepseek-ai/dsh-root', '--filter', '@deepseek-ai/dsh-experimental-tool-agent-team...', '--filter', '@deepseek-ai/dsh-agent-loop-testkit...', '--filter', '@deepseek-ai/dsh-ptc-runtime-node...']
+const filters = key === 'rc5'
+  ? ['@deepseek-ai/dsh-root', '@deepseek-ai/dsh-tool-agent-team...', '@deepseek-ai/dsh-tool-subagent-control...', '@deepseek-ai/dsh-tool-workflow...', '@deepseek-ai/dsh-jobs-local...', '@deepseek-ai/dsh-tool-jobs...', '@deepseek-ai/dsh-agent-loop-testkit...', '@deepseek-ai/dsh-ptc-runtime-node...']
+  : ['@deepseek-ai/dsh-root', '@deepseek-ai/dsh-experimental-tool-agent-team...', '@deepseek-ai/dsh-agent-loop-testkit...', '@deepseek-ai/dsh-ptc-runtime-node...']
+const args = ['install', '--frozen-lockfile', '--ignore-scripts', ...filters.flatMap(name => ['--filter', name])]
 if (process.platform === 'win32') run(process.env.ComSpec ?? 'cmd.exe', ['/d', '/c', manager, ...args], directory)
 else run(manager, args, directory)
 console.log(`Ready: ${key} / ${host.sha}`)
